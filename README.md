@@ -7,6 +7,9 @@
   - [Spark 최적화](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Batch%20Processing/spark_optimization.md)
 - Batch SQL
   - Presto
+    - [Presto 개요](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Batch%20Processing/presto_base.md)
+    - Presto 튜닝
+    - [Trino 개요](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Batch%20Processing/trino_base.md)
   - Hive
 
 ## workflow
