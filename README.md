@@ -12,7 +12,8 @@
 - Batch SQL
   - Presto
     - [Presto 개요](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Batch%20Processing/presto_base.md)
-    - Presto 튜닝
+    - [Presto 튜닝](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Batch%20Processing/presto_tuning.md)
+    - [Presto 쿼리 Processing](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Batch%20Processing/presto_query_processing.md)
     - [Trino 개요](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Batch%20Processing/trino_base.md)
   - Hive
 
