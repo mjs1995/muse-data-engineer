@@ -1,4 +1,6 @@
 # Hive 
+- ![image](https://user-images.githubusercontent.com/47103479/217271146-56e7f837-5195-40f8-9083-ad5d9edb2449.png)
+  - https://www.simplilearn.com/tutorials/hadoop-tutorial/hive
 - 하둡 기반의 데이터 웨어하우징 프레임워크로, 빠른 속도로 성장하는 페이스북의 소셜 네트워크에서 매일같이 생산되는 대량의 데이터를 관리하고 학습하기 위해 개발되었습니다.
 - 하이브에서 레코드 단위 갱신(record-level update), 삽입, 삭제를 할 수 없긴 하지만 쿼리로 새 테이블을 만들 수 있고 쿼리 결과를 파일로 남길 수도 있습니다.
 - SQL은 비즈니스 인텔리전스 분야의 도구에서 사용되는 공통 언어(lingua franca)이기 때문에(예를 들어 ODBC는 공통 인터페이스) 해당 분야의 상용 제품과 쉽게 통합할 수 있습니다.
@@ -24,6 +26,8 @@
 - 쓰기 스키마는 데이터베이스가 컬럼 단위의 데이터 색인과 압축을 제공하기 때문에 더 빠르게 쿼리를 수행할 수 있음, 상대적으로 데이터베이스에 데이터를 로드하는 시간은 더 오래 걸림, 더욱이 쿼리가 정해지지 않아서 로드 시점에 스키마를 지정할 수 없고 색인도 적용할 수 없는 경우도 빈번합니다. 
 
 ## HiveQL : 쿼리
+- ![image](https://user-images.githubusercontent.com/47103479/217271415-eb16aeed-5f74-4893-8539-7f0c95b9d23e.png)
+  - https://cwiki.apache.org/confluence/display/hive/design
 - SELECT ... FROM 절
   - SQL에서 SELECT 프로젝션(projection) 연산자. FROM 절은 레코드를 선택하기 위해 필요한 테이블. 뷰 또는 중첩 쿼리(nested query)를 식별합니다.
   - 컬렉션 데이터형의 컬럼을 선택하면 하이브는 출력을 위해 JSON(Java Script Object Notation)문법을 사용합니다.
@@ -32,7 +36,6 @@
   - STRUCT로 JSON 맵 형식을 사용합니다.
  - 하이브는 오버 플로우나 언더플로우가 발생할 때 더 넓은 범위의 데이터형이 존재하더라도 결과를 자동으로 변환하지 않는 자바 데이터형 규칙을 따름니다. 
 - 기타 내장 함수
-  - ```sql
   - > parse_url(url,partname,key) : HOST, PATH, QUERY, REF,PROTOCOL, AUTHORITY, FILE, USERINFO, QUERY:<key>. 옵션 키는 마지막에 QUERY:<key>를 요청함 
   - > find_in_set(s, 쉼표로 구분된 String) : 쉼표로 구분된 문자열에서 s의 색인을 반환함. 찾지 못하면 NULL이 반환됨
   - > locate(substr,str,pos) : str의 post 위치로부터 substr이 있는 색인을 반환함 
@@ -42,3 +45,47 @@
   - > ngrams(array<array<string>>, N, K, pf) : 텍스트에서 top-K n-gram을 반환함. pf는 정밀도
   - > context_ngrams(array<array<string>>,array<string>, int K, int pf> : ngrams와 같지만 출력 배열에서 두 번째 단어 배열로 시작하는 n-gram을 찾음
   - > in_file(s, filename) : filenmae 파일에서 문자열 s가 나타나면 true를 반환함 
+- WHERE 절
+  - WHERE 절에서 컬럼 별칭을 사용할 수 없습니다. 하지만 중첩 SELECT 문은 사용할 수 있습니다.
+  - ```sql
+    SELECT e.* FROM 
+    (SELECT name, salary, deductions['Federal Taxes"] as ded,
+    salary * (1 - deductions['Federal Taxes"]) as salary_minus_fed_taxes
+    FROM employees) e
+    WHERE round(e.salary_minus_fed_taxes) > 70000;
+    ```
+  - LIKE와 RLIKE
+    - 하이브는 LIKE 절을 자바 정규표현식을 사용할 수 있는 RLIKE절로 확장합니다. 
+    - 마침표(.)는 어떠 한 문자와 일치하고 별(*)은 왼쪽에 있는 것이 0번에서 여러 번 반복되는 것을 의미합니다.
+    - (x|y) 표현식은 x 혹은 y가 일치하는 것을 의미합니다.
+- 조인 문
+  - 하이브는 고전적인 SQL 조인 문을 제공하며 동등 조인(EQUAL-JOIN)만 제공합니다.
+  - 조인 최적화
+    - 하이브는 쿼리의 마지막 테이블이 가장 크다고 가정합니다. 다른 테이블을 버퍼링하려고 시도하고 각 레코드에 대해서 조인을 수행하면서 마지막 테이블을 흘려보냅니다. 조인 쿼리를 구성할 때는 가장 큰 테이블이 가장 마지막에 오도록 합니다.
+    - 하이브는 쿼리 최적화(optimizer)이기에 어떤 테이블을 마지막으로 흘려보내야 하는지 지정하는 힌트(hint) 메카니즘을 제공합니다.
+      - ```sql
+        SELECT /** STREAMTABLE(s) */ s.ymd, s.symbol, s.price_close, d.dividend
+        FROM stocks s JOIN dividends d ON s.ymd = d.ymd AND s.symbol = d.symbol
+        WHERE s.symbol = 'AAPL';
+        ```
+    - 중첩 SELECT 문
+      - ```sql
+        SELECT s.ymd, s.symbol, s.price_close, d.dividend FROM
+        (SELECT * FROM stocks WHERE symbol = 'AAPL' AND exchange = 'NASDAQ') s
+        LEFT OUTER JOIN
+        (SELECT * FROM dividends WHERE symbol = 'AAPL' AND exchange = 'NASDAQ') d
+        ON s.ymd = d.ymd;
+        ```
+    - 중첩 SELECT 문은 데이터 조인 전에 파티션 필터를 적용하는 데 필요한 푸시다운(push down)을 수행합니다.
+      - 푸시다운은 WHERE 절의 술어 중 일부를 떼어내어 미리 실행하는 것을 말합니다. 리지주얼(residual)은 푸시다운 후에 남은 술어를 일컫습니다. 
+      - 하이브는 조인을 수행한 후에 WHERE 절을 평가합니다. WHERE 절은 NULL이 되지 않는 컬럼값에 대해서만 필터를 적용하는 술어를 사용해야합니다. 하이브 문서와는 달리 파티션 필터는 외부 조인의 ON 절에서 동작하지 않습니다. 
+  - 왼쪽 세미 조인
+    - 왼쪽 세미 조인(LEFT SEMI-JOIN)은 오른쪽 테이블에서 ON의 술어를 만족하는 레코드를 찾을 경우 왼쪽 테이블의 레코드를 반환하며 하이브는 오른쪽 세미 조인을 지원하지 않습니다.
+  - 맵 사이드 조인(Map-side Join)
+    - 만약 한 테이블만 빼고 모두 작다면 작은 테이블은 메모리에 캐시하고 가장 큰 테이블은 맵퍼로 흘려보낼 수 있습니다. 하이브는 메모리에 캐시한 작은 테이블로부터 일치하는 모든 것을 찾아 낼 수 있기 때문에 맵에서 모든 조인을 할 수 있음. 이렇게 하면 일반 조인 시나리오에서 필요한 리듀스 단계를 제거할 수 있습니다.
+    - ```sql
+      SELECT /*+ MAPJOIN(d) */ s.ymd, s.symbol, s.price_close, d.dividend 
+      FROM stocks s JOIN dividends d ON s.ymd = d.ymd AND s.symbol = d.symbol
+      WHERE s.symbol = 'AAPL'
+      ```
+    - 하이브는 오른쪽 외부 조인과 완전 외부 조인에 대해서 최적화를 지원하지 않습니다.    
