@@ -89,3 +89,34 @@
       WHERE s.symbol = 'AAPL'
       ```
     - 하이브는 오른쪽 외부 조인과 완전 외부 조인에 대해서 최적화를 지원하지 않습니다.    
+- ORDER BY와 SORT BY
+  - ![image](https://user-images.githubusercontent.com/47103479/217562032-a7ddef9d-a1ac-4263-81b7-83005d3c30d5.png)
+    - https://sqlrelease.com/sort-by-order-by-distribute-by-and-cluster-by-in-hive
+  - 하이브는 ORDER BY 대신 데이터를 각 리듀서에 정렬하는 SORT BY를 추가합니다. 각 리듀스의 출력이 정렬되도록 지역 정렬(local ordering)을 수행하는 것을 의미합니다.
+- SORT BY와 함께 사용하는 DISTRIBUTE BY
+  - ![image](https://user-images.githubusercontent.com/47103479/217562172-11c79363-7475-4f64-b246-36cc92911e42.png)
+    - https://sqlrelease.com/sort-by-order-by-distribute-by-and-cluster-by-in-hive
+  - DISTRIBUTE BY는 맵의 출력을 리듀서로 어떻게 나누어 보내는지를 제어합니다. 
+  - 기본적으로 맵리듀스는 맵퍼가 출력하는 키에 대해서 해시값을 계산하고 해시값을 이용하여 키-값 쌍을 가용한 리듀서로 균등하게 분산하려고 노력합니다. 
+  - 맵퍼에서 출력한 키-값 쌍의 값을 계산하여 리듀서를 선택하는 것은 파티셔너의 역할 
+  - SORT BY는 리듀서 안에서 데이터 정렬을 제어하는 반면 DISTRIBUTE BY는 리듀서가 처리할 로우를 어떻게 받는지 제어한다는 점에서 GROUP BY처럼 동작합니다.
+  - 하이브는 SORT BY 절 전에 DISTRIBUTE BY 절을 사용할 것을 요구하므로 주의해야합니다.
+  - SORT BY 절은 여러 리듀서를 사용하여 데이터를 정렬하는 반면 ORDER BY 절은 단일 리듀서를 사용하여 모든 데이터를 함께 정렬하기 때문에 대용량 데이터 세트를 정렬해야 할 때 ORDER BY 대신 SORT BY를 사용해야 합니다. 따라서 많은 수의 입력에 대해 ORDER BY를 사용하면 실행하는 데 많은 시간이 걸립니다.
+- CLUSTER BY
+  - ![image](https://user-images.githubusercontent.com/47103479/217562644-469150fb-a973-4a03-a208-242b0fe15774.png)
+    - https://sqlrelease.com/sort-by-order-by-distribute-by-and-cluster-by-in-hive
+  - DISTRIBUTE BY ... SORT BY 또는 간단히 사용하는 CLUSTER BY 절은 출력 파일 간에 전체 정렬을 이루면서 SORT BY의 병렬 처리를 사용하도록 하는 방법 
+- 데이터 표본을 만드는 쿼리
+  - 매우 큰 데이터셋에 대해서 전체를 사용하는 것이 아니라 어떤 쿼리를 수행하여 나온 결과를 대표 표본으로 하여 작업하고자 하는 경우가 종종 있습니다.
+  - 하이브는 테이블을 버킷으로 구성하여 표본을 만든느 쿼리로 이를 지원합니다.
+  - 버킷 테이블에 대한 입력 푸루닝
+    - pruning(푸루닝)은 데이터 분석 작업에 불필요한 데이터를 미리 잘라내는 작업을 말합니다. 가지치기, 추리기 정도로 번역할 수 있으나 데이터베이스나 데이터 분석에 많이 사용하는 용어입니다. 
+
+## HCatalog
+- ![image](https://user-images.githubusercontent.com/47103479/217563117-e620c9d9-f576-4df9-ba62-f2ac205e20f1.png)
+  - https://www.oreilly.com/library/view/hadoop-application-architectures/9781491910313/ch01.html
+- Hive 외부에서 Hive 메타스토어를 사용할 수 있도록 HCatalog라는 별도의 프로젝트가 시작되었고 HCatalog는 Hive의 일부이며 다른 도구(예: Pig 및 MapReduce)가 Hive 메타스토어와 통합할 수 있도록 합니다.
+- HCatalog는 하둡이 모든 도구에서 사용할 수 있는 하이브 메타스토어를 만들고, 맵리듀스와 피그의 커넥터를 제공합니다. 하둡 도구를 사용하여 하이브 웨어하우스의 데이터를 읽고 쓸 수 있습니다. 하이브를 사용하지 않는 사용자를 위한 하이브 DDL로 메타스토어를 다루는 명령행 도구를 제공하고 알림 서비스도 제공합니다.
+- 메타데이터 저장소를 공유하면 사용자가 도구 간에 손쉽게 데이터를 공유할 수 있습니다. 일반적으로 피그나 맵리듀스로 데이터를 올리고 나면 정규화한 다음 하이브로 분석합니다. 분석 쿼리를 위해 하이브를 사용하던 사용자는 ETL 처리를 하거나 데이터 모델을 구축할 때 피그를 사용합니다.
+
+  
