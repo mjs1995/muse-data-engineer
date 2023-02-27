@@ -16,6 +16,10 @@
     - [Presto 쿼리 Processing](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Batch%20Processing/presto_query_processing.md)
     - [Trino 개요](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Batch%20Processing/trino_base.md)
   - Hive
+    - [Hive 개요](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Batch%20Processing/hive_base.md)
+    - [Hive 아키텍처](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Batch%20Processing/hive_architecture.md)
+    - [Hive 포맷](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Batch%20Processing/hive_format.md)
+    - [HiveQL](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Batch%20Processing/hive_hiveql.md)
 
 ## workflow
 - Airflow
@@ -24,3 +28,7 @@
 
 ## Programming Language
 - Python
+  - [Python과 프로파일링]
+  - [Python 컴파일]
+  - [Python 비동기]
+  - [Python multiprocessing]
