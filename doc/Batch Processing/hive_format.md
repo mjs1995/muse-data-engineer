@@ -53,14 +53,22 @@
       - https://www.oreilly.com/library/view/operationalizing-the-data/9781492049517/ch04.html
     - Hadoop용 오픈 소스 열 지향 스토리지 형식입니다. 
     - Parquet는 복잡한 데이터를 대량으로 작업하도록 최적화되어 있으며 효율적인 데이터 압축 및 인코딩 유형을 위한 방법을 포함합니다.
+  - ORC, Parquet 및 Avro의 품질
+    - | |ORC|Parquet|Avro|
+      |:--:|:--:|:--:|:--:|
+      |Row or column|Column|Column|Row|
+      |Compression|Great|Great|Good|
+      |Speedup (compared to text file)|10–100x|10–100x|10x|
+      |Schema evolution|Good|Better|Best|
+      |Platforms|Hive, Spark, Presto|Hive, Spark, Presto|Hive, Spark|
+      |Splittability|Best|Best|Better|
+      |File statistics|Yes|Yes|No|
+      |Indexes|Yes|Yes|No|
+      |Bloom filters|Yes|No|No|
   - Custom INPUTFORMAT and OUTPUTFORMAT
     - 하이브는 하둡의 입력 포맷(InputFormat) API를 이용해 텍스트 파일, 시퀀스파일, 사용자 정의 파일과 같은 다양한 소스로부터 데이터를 읽습니다. 출력 포맷(OutputFormat) API를 이용하면 다양한 포맷으로 데이터를 쓸 수도 있습니다.
     - 입력 포맷(Input Format)은 주로 파일 형태의 입력 스트림을 레코드 단위로 분할되는 방법을 결정합니다. SerDe는 레코드를 컬럼 단위로 분석하고 커스텀 입력 포맷은 INPUTFORMAT 문을 이용해 테이블을 생성할 때 선언할 수 있습니다. 기본 STORED AS TEXTFILE 명세의 입력 포맷은org.apache.hadoop.mapreduce.lib.input.TextInputFormat으로 자바 객체로 구현되어 있습니다.
     - 출력 포맷(Output Format)은 출력 스트림(보통은 파일)에 어떻게 레코드를 기록하는지 결정합니다. SerDe는 개별 레코드를 적절한 바이트 스트림으로 직렬화하고 사용자 정의 출력 포맷은 OUTPUTFORMAT문을 이용해 테이블을 생성할 때 선언할 수 있습니다.
-  - ORC, Parquet 및 Avro의 품질
-    - ![image](https://user-images.githubusercontent.com/47103479/221567394-dfff7feb-9c21-4f30-b0c4-2314140e4c2f.png)
-
-      - https://www.oreilly.com/library/view/operationalizing-the-data/9781492049517/ch04.html
 - 사용자 정의 함수(UDF), 사용자 정의 집계 함수(user-defined aggregate function - UDAF), 사용자 정의 테이블 생성 함수(user-defined table-generating function - UDTF) 등 세 종류의 UDF를 지원합니다. 세 종류의 차이점은 입력으로 받는 행과 출력되는 행의 개수가 다르다는 것입니다.
   - 정규 UDF는 단일 행을 처리한 후 단일 행을 출력하며 수학 함수나 문자열 함수와 같은 대부분의 함수가 여기에 해당합니다.
   - UDAF는 다수의 입력 행을 처리한 후 단일 행을 출력하며 COUNT나 MAX같은 집계 함수가 여기에 해당합니다.
