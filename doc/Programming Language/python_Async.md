@@ -1,0 +1,34 @@
+# 비동기 I/O
+- blocking IO vs Non-blocking
+	- blocking IO
+		- 시스템 콜 요청 시 -> 커널 IO 작업 완료 시까지 응답 대기
+		- 제어권(IO작업) ->  커널 소유 -> 응답(Response) 전까지 대기(Block) -> 다른 작업 수행 불가(대기)
+	- Non-blocking
+      - 시스템 콜 요청 시 -> 커널 IO 작업 완료 여부 상관없이 즉시 응답
+      - 제어권(IO작업) ->  유저 프로세스 전달 -> 다른 작업 수행 가능(지속) -> 주기적 시스템 콜 통해서 IO 작업 완료 여부 확인
+- Async(비동기) vs Sync(동기)
+	- Async : 코드가 작성된 순서대로 수행하지 않음, IO 작업 완료 여부에 대한 Noty(Notifation)는 커널(호출되는 함수) -> 유저프로세스(호출하는 함수) (작업 되면 연락 주세요 할 거하고 있다가 나중에 연락받음) 
+	  - ![image](https://user-images.githubusercontent.com/47103479/222959373-6be831cb-97cf-4993-9ea2-83752dc8f2f3.png)
+  - Sync : 코드가 작성된 순서대로 수행, IO 작업 완료 여부에 대한 Noty는 유저프로세스(호출하는 함수) -> 커널(호출되는 함수) (작업 완료됐나요? 계속 물어보면서 호출해서 되면 시작함)
+    - ![image](https://user-images.githubusercontent.com/47103479/222959355-64d25e8e-25c7-4af5-8900-3ac481d756a8.png)
+      - https://developer.ibm.com/articles/l-async/
+  - ![image](https://user-images.githubusercontent.com/47103479/222959404-3d957edd-3ed5-4395-88a1-97bec8cce247.png)
+    - https://limdongjin.github.io/concepts/blocking-non-blocking-io.html#useful-references
+- 실제 코드 자체보다는 코드에 필요한 데이터를 얻어오는 작업이 병목이 될 수도 있습니다. 프로그램이 I/O위주(I/O bound)
+- 비동기 프로그래밍 소개
+  - 일반적으로 프로그램이 I/O 대기(I/O wait, 일시 정지된 상태를 일컬음)에 들어가면, 실행이 멈추고 커널이 I/O 요청과 관련된 저수준 연산을 처리하며(이를 컨테스트 스위칭으로 상당히 비싼 연산), I/O 연산이 끝날 때까지 프로그램은 재개되지 않습니다. 
+  - 동시성 프로그램은 보통 실행할 대상과 시점을 관리하는 이벤트 루프(실행할 함수의 목록에 지나지 않음)를 사용합니다. 
+- async/await의 동작 방식
+  - async 함수(async def)는 코루틴(coroutine)이라 불립니다.
+  - 파이썬에서 코루틴은 제너레이터와 같은 철학으로 구현되며 제너레이터에 이미 실행을 일시 중단하고 나중에 계속 실행할 수 있는 장치가 있으므로 구현이 편리합니다. 이 패러다임을 사용하면 await 문은 함수의 yield문과 기능 면에서 비슷해집니다.
+- gevent
+  - 굉장히 단순한 비동기 라이브러리로 비동기 함수가 퓨처를 반환한다는 패러다임을 따릅니다. 코드의 로직 대부분을 동시에 실행할 수 있다는 뜻입니다.
+  - gevent는 표준 I/O 함수를 몽키패치(monkey patch)해서 비동기적으로 만듭니다. 보통 표준 I/O 패키지를 사용하기만 해도 비동기적 동작의 이점을 살릴 수 있습니다. 
+  - 그린렛(greenlet)은 코루틴의 일종으로 스레드와 같다고 생각할 수 있습니다. 
+- tornado : 파이썬 비동기 I/O에 자주 사용함, HTTP 클라이언트와 서버를 위해 페이스북에서 개발한 패키지
+- 파이프라이닝 : 결과를 일괄 처리하는 방식으로 I/O 작업의 부하를 낮추고 싶을 때 큰 도움이 됩니다. 파이프라이닝은 비동기 I/O의 속도와 순차 프로그램의 작성 용이성을 잘 절충한 방식으로 파이프라이닝 시 사용할 적절한 묶음의 크기는 상황에 따라 달라지므로 최선의 결과를 얻으려면 프로파일링과 튜닝이 필요합니다. 
+- gevent는 비동기 I/O를 위한 가장 높은 수준의 인터페이스를 제공합니다. tornado와 aiohttp를 사용하면 비동기 I/O 스택을 직접 제어할 수 있으며 서로 다른 수준의 추상화와 더불어, 각 라이브러리는 서로 다른 문법 패러다임을 사용합니다. asyncio는 비동기 해법을 하나로 묶는 접착제이며 이 모두를 제어할 수 있는 토대를 제공합니다. 
+
+# Reference
+- https://www.oreilly.com/library/view/high-performance-python/9781492055013/
+- https://developer.ibm.com/articles/l-async/
