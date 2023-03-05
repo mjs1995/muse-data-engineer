@@ -28,7 +28,7 @@
 
 ## Programming Language
 - Python
-  - [Python과 프로파일링]
-  - [Python 컴파일]
-  - [Python 비동기]
-  - [Python multiprocessing]
+  - [Python과 프로파일링](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Programming%20Language/python_profiling.md)
+  - [Python 컴파일](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Programming%20Language/python_comfile.md)
+  - [Python 비동기](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Programming%20Language/python_Async.md)
+  - [Python multiprocessing](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Programming%20Language/python_multiprocessing.md)
