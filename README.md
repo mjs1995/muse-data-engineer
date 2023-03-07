@@ -1,6 +1,10 @@
 # muse-data-engineer
 - Technical Skills to becoming a data engineer
 
+## Data Ingestion
+- Kafka
+  - [이진로그 Binary log(Binlog)](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Data%20Ingestion/binlog.md)
+  
 ## Batch Processing
 - Spark
   - [Spark 개요](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Batch%20Processing/spark_base.md)
