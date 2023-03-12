@@ -5,7 +5,8 @@
 - Kafka
   - [이진로그 Binary log(Binlog)](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Data%20Ingestion/binlog.md)
   - [변경 데이터 캡처 CDC](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Data%20Ingestion/cdc.md)
-  
+- Embulk
+  - [Embulk & Digdag](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Data%20Ingestion/embulk.md)
 ## Batch Processing
 - Spark
   - [Spark 개요](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Batch%20Processing/spark_base.md)
