@@ -32,6 +32,10 @@
   - [Airflow 개요](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/workflow/airflow_base.md)
   - [Airflow 아키텍처](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/workflow/airflow_architecture.md)
 
+## BI
+- [OLAP vs OLTP](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/BI/olap.md)
+- [데이터 모델링과 DW/DM](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/BI/data_modeling_dw_dm.md) 
+
 ## Programming Language
 - Python
   - [Python과 프로파일링](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Programming%20Language/python_profiling.md)
