@@ -7,6 +7,7 @@
   - [변경 데이터 캡처 CDC](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Data%20Ingestion/cdc.md)
 - Embulk
   - [Embulk & Digdag](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Data%20Ingestion/embulk.md)
+
 ## Batch Processing
 - Spark
   - [Spark 개요](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Batch%20Processing/spark_base.md)
@@ -35,6 +36,12 @@
 ## BI
 - [OLAP vs OLTP](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/BI/olap.md)
 - [데이터 모델링과 DW/DM](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/BI/data_modeling_dw_dm.md) 
+- [데이터 레이크와 클라우드 DW](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/BI/data_lake.md)
+
+## Back-End Development
+- [인프라 기초](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Back-End%20Development/infra_based.md)
+- [클라우드와 온프레미스](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Back-End%20Development/onpremises_cloud.md)
+- [모놀리틱 아키텍처와 마이크로서비스 아키텍처](https://github.com/mjs1995/muse-data-engineer/tree/main/doc/Back-End%20Development)
 
 ## Programming Language
 - Python
