@@ -9,6 +9,9 @@
   - [Embulk & Digdag](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Data%20Ingestion/embulk.md)
 
 ## Batch Processing
+- Hadoop
+  - [Hadoop과 HDFS](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Batch%20Processing/hadoop_hdfs.md)
+  - [Mapreduce와 YARN](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Batch%20Processing/hadoop_map_yarn.md)
 - Spark
   - [Spark 개요](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Batch%20Processing/spark_base.md)
   - [Spark 튜닝](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Batch%20Processing/spark_tuning.md)
@@ -41,7 +44,7 @@
 ## Back-End Development
 - [인프라 기초](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Back-End%20Development/infra_based.md)
 - [클라우드와 온프레미스](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Back-End%20Development/onpremises_cloud.md)
-- [모놀리틱 아키텍처와 마이크로서비스 아키텍처](https://github.com/mjs1995/muse-data-engineer/tree/main/doc/Back-End%20Development)
+- [모놀리틱 아키텍처와 마이크로서비스 아키텍처](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Back-End%20Development/msa.md)
 
 ## Programming Language
 - Python
