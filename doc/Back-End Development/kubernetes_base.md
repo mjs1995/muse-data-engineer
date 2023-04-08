@@ -1,0 +1,43 @@
+# Kubernetes
+- ![image](https://user-images.githubusercontent.com/47103479/230707559-141659ab-c9bf-46a1-b822-17c975cbf737.png)
+  - https://docs.oracle.com/ko/solutions/kubernetes-oke-logging-analytics/index.html#GUID-E1D81E43-7CFD-4650-B8F6-EED8A4676CD9
+- 쿠버네티스 등장 이유는 구성 요소의 서버 배포를 자동으로 스케줄링하고 구성, 관리, 장애 처리를 포함하는 자동화가 필요하기 때문입니다.
+- 개발자가 운영 팀의 도움 없이도 자신의 애플리케이션을 원하는 만큼 자주 배포할 수 있습니다. 하드웨어 장애 발생 시 해당 애플리케이션을 자동으로 모니터링하고 스케줄링을 조정해 운영 팀을 도와줍니다.
+- 기능
+  - 여러 서버들에서의 컨테이너 관리
+  - 컨테이너 간 네트워크 관리
+  - 컨테이너의 부하분산
+  - 컨테이너의 감시
+  - 무정지로 업데이트
+- 쿠버네티스와 같은 시스템이 필요한 이유
+  - 모놀리스 애플리케이션에서 마이크로서비스로 전환
+    - 시스템의 증가하는 부하를 처리하려고 CPU, 메모리, 그 밖의 서버 구성 요소를 추가해 서버를 수직 확장(scale up)하거나 서버를 추가하고 애플리케이션의 복사본(또는 복제본)을 실행해 전체 시스템을 수평 확장(scale out) 해야 합니다. 
+      - 수직 확장은 일반적으로 애플리케이션을 변경할 필요가 없지만 비교적 비용이 많이 들고 실제로는 확장에 한계(상한)가 있습니다. 
+      - 수평 확장은 상대적으로 저렴하지만 애플리케이션 코드의 큰 변경이 필요할 수 있으며 항상 가능한 것도 아닙니다.(관계형 데이터 베이스) 
+    - 마이크로서비스로 애플리케이션 분할 
+      - 마이크로서비스는 일반적으로 RESTful(Repressentaional State Transfer) API를 제공하는 HTTP와 같은 동기 프로토콜과 AMQP(Advanced Message Queuing Protocl)와 같은 비동기 프로토콜로 통신합니다.
+  - 애플리케이션에 일관된 환경 제공 
+  - 지속적인 배포로 전환: 데브옵스와 노옵스
+    - 데브옵스: 개발자, 품질 보증(QA), 운영 팀이 전체 프로세스에서 협업해야 합니다.
+    - 노옵스: 자동화로 운영 팀의 손이 거의 필요 없는 환경, 하드웨어 인프라를 전혀 알지 못하더라도 운영 팀을 거치지 않고 개발자가 애플리케이션을 직접 배포하는 방식이 가장 이상적입니다. 
+    - 쿠버네티스를 사용하면 하드웨어를 추상화하고 이를 애플리케이션에 배포, 실행을 위한 플랫폼으로 제공함으로써 개발자는 시스템 관리자의 도움 없이도 애플리케이션을 구성, 배포할 수 있으며 시스템 관리자는 실제 실행되는 애플리케이션을 알 필요 없이 인프라를 유지하고 운영하는 데 집중할 수 있습니다. 
+- 쿠버네티스 사용의 장점
+  - 애플리케이션 배포의 단순화
+  - 하드웨어 활용도 높이기 
+  - 상태 확인과 자가 치유 
+  - 오토스케일링
+  - 애플리케이션 개발 단순화 
+- 쿠버네티스는 Deployment, StatefulSets, DaemonSet, Job, CronJob 등 다양한 배포 방식을 지원
+  - ![image](https://user-images.githubusercontent.com/47103479/230707598-61c8f02d-865e-43ea-b1d1-db6fff0b9b5b.png)
+  - Deployment : 새로운 버전의 애플리케이션을 다양한 전략으로 무중단 배포 가능
+  - StatefulSets : 실행 순서를 보장하고 호스트 이름과 볼륨을 일정하게 사용할 수 있어 순서나 데이터가 중요한 경우에 사용 가능
+  - DaemonSet : 로그나 모니터링 등 모든 노드에 설치가 필요한 경우에 이용
+  - Job, CronJob : 배치성 작업
+- ![image](https://user-images.githubusercontent.com/47103479/230707619-d3cc17ba-c0bf-44c1-845f-f4cab6930c74.png)
+  - https://landscape.cncf.io/
+  - 서비스메시(lstio, linkerd), CI(Tekton, Spinnaker), 컨테이너 서버리스(Knative), 머신러닝(kubeflow)이 모두 쿠버네티스 환경에서 동작합니다.
+
+# Reference
+- https://www.oreilly.com/library/view/kubernetes-in-action/9781617293726/ 
+- https://www.oreilly.com/library/view/cloud-native-devops/9781492040750/
+- http://www.yes24.com/Product/Goods/64728692
