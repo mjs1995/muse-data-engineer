@@ -7,6 +7,7 @@
   - [변경 데이터 캡처 CDC](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Data%20Ingestion/cdc.md)
 - Embulk
   - [Embulk & Digdag](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Data%20Ingestion/embulk.md)
+  - [Embulk 코드](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Data%20Ingestion/embulk_code.md)
 
 ## Batch Processing
 - Hadoop
@@ -35,7 +36,9 @@
 - Airflow
   - [Airflow 개요](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/workflow/airflow_base.md)
   - [Airflow 아키텍처](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/workflow/airflow_architecture.md)
-
+- Dbt
+  - [dbt 개요](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/workflow/dbt_base.md)
+  
 ## BI
 - [OLAP vs OLTP](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/BI/olap.md)
 - [데이터 모델링과 DW/DM](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/BI/data_modeling_dw_dm.md) 
