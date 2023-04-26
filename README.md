@@ -38,6 +38,8 @@
   - [Airflow 아키텍처](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/workflow/airflow_architecture.md)
 - Dbt
   - [dbt 개요](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/workflow/dbt_base.md)
+- Prefect
+  - [Prefect 개요](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/workflow/prefect_base.md)
   
 ## BI
 - [OLAP vs OLTP](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/BI/olap.md)
