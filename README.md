@@ -1,68 +1,75 @@
 # muse-data-engineer
-- Technical Skills to becoming a data engineer
+
+* Technical Skills to becoming a data engineer
 
 ## Data Ingestion
-- Kafka
-  - [이진로그 Binary log(Binlog)](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Data%20Ingestion/binlog.md)
-  - [변경 데이터 캡처 CDC](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Data%20Ingestion/cdc.md)
-- Embulk
-  - [Embulk & Digdag](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Data%20Ingestion/embulk.md)
-  - [Embulk 코드](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Data%20Ingestion/embulk_code.md)
+
+* Kafka
+  * [이진로그 Binary log(Binlog)](data-ingestion/data-ingestion/binlog.md)
+  * [변경 데이터 캡처 CDC](data-ingestion/data-ingestion/cdc.md)
+* Embulk
+  * [Embulk & Digdag](data-ingestion/data-ingestion-1/embulk.md)
+  * [Embulk 코드](data-ingestion/data-ingestion-1/embulk\_code.md)
 
 ## Batch Processing
-- Hadoop
-  - [Hadoop과 HDFS](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Batch%20Processing/hadoop_hdfs.md)
-  - [Mapreduce와 YARN](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Batch%20Processing/hadoop_map_yarn.md)
-- Spark
-  - [Spark 개요](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Batch%20Processing/spark_base.md)
-  - [Spark 튜닝](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Batch%20Processing/spark_tuning.md)
-  - [Spark 최적화](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Batch%20Processing/spark_optimization.md)
-  - [Spark Yarn](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Batch%20Processing/spark_yarn.md)
-  - [Spark 클러스터 매니저](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Batch%20Processing/spark_cluster_manager.md)
-  - [Spark 조인과 셔플](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Batch%20Processing/spark_join.md)
-- Batch SQL
-  - Presto
-    - [Presto 개요](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Batch%20Processing/presto_base.md)
-    - [Presto 튜닝](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Batch%20Processing/presto_tuning.md)
-    - [Presto 쿼리 Processing](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Batch%20Processing/presto_query_processing.md)
-    - [Trino 개요](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Batch%20Processing/trino_base.md)
-  - Hive
-    - [Hive 개요](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Batch%20Processing/hive_base.md)
-    - [Hive 아키텍처](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Batch%20Processing/hive_architecture.md)
-    - [Hive 포맷](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Batch%20Processing/hive_format.md)
-    - [HiveQL](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Batch%20Processing/hive_hiveql.md)
+
+* Hadoop
+  * [Hadoop과 HDFS](doc/batch-processing/hadoop\_hdfs.md)
+  * [Mapreduce와 YARN](doc/batch-processing/hadoop\_map\_yarn.md)
+* Spark
+  * [Spark 개요](doc/batch-processing-1/spark\_base.md)
+  * [Spark 튜닝](doc/batch-processing-1/spark\_tuning.md)
+  * [Spark 최적화](doc/batch-processing-1/spark\_optimization.md)
+  * [Spark Yarn](doc/batch-processing-1/spark\_yarn.md)
+  * [Spark 클러스터 매니저](doc/batch-processing-1/spark\_cluster\_manager.md)
+  * [Spark 조인과 셔플](doc/batch-processing-1/spark\_join.md)
+* Batch SQL
+  * Presto
+    * [Presto 개요](doc/batch-sql/batch-processing-1/presto\_base.md)
+    * [Presto 튜닝](doc/batch-sql/batch-processing-1/presto\_tuning.md)
+    * [Presto 쿼리 Processing](doc/batch-sql/batch-processing-1/presto\_query\_processing.md)
+    * [Trino 개요](doc/batch-sql/batch-processing-1/trino\_base.md)
+  * Hive
+    * [Hive 개요](doc/batch-sql/batch-processing/hive\_base.md)
+    * [Hive 아키텍처](doc/batch-sql/batch-processing/hive\_architecture.md)
+    * [Hive 포맷](doc/batch-sql/batch-processing/hive\_format.md)
+    * [HiveQL](doc/batch-sql/batch-processing/hive\_hiveql.md)
 
 ## workflow
-- Airflow
-  - [Airflow 개요](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/workflow/airflow_base.md)
-  - [Airflow 아키텍처](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/workflow/airflow_architecture.md)
-- Dbt
-  - [dbt 개요](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/workflow/dbt_base.md)
-- Prefect
-  - [Prefect 개요](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/workflow/prefect_base.md)
-  
+
+* Airflow
+  * [Airflow 개요](workflow/airflow/airflow\_base.md)
+  * [Airflow 아키텍처](workflow/airflow/airflow\_architecture.md)
+* Dbt
+  * [dbt 개요](workflow/dbt\_base.md)
+* Prefect
+  * [Prefect 개요](workflow/prefect\_base.md)
+
 ## BI
-- [OLAP vs OLTP](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/BI/olap.md)
-- [데이터 모델링과 DW/DM](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/BI/data_modeling_dw_dm.md) 
-- [데이터 레이크와 클라우드 DW](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/BI/data_lake.md)
+
+* [OLAP vs OLTP](bi/olap.md)
+* [데이터 모델링과 DW/DM](bi/data\_modeling\_dw\_dm.md)
+* [데이터 레이크와 클라우드 DW](bi/data\_lake.md)
 
 ## Back-End Development
-- [인프라 기초](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Back-End%20Development/infra_based.md)
-- [클라우드와 온프레미스](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Back-End%20Development/onpremises_cloud.md)
-- [모놀리틱 아키텍처와 마이크로서비스 아키텍처](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Back-End%20Development/msa.md)
-- Kubernetes
-  - [Kubernetes 개요](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Back-End%20Development/kubernetes_base.md)
-  - [Kubernetes 오브젝트 모델](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Back-End%20Development/kubernetes_object.md) 
-  - [Kubernetes 파드](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Back-End%20Development/kubernetes_pod.md)
-  - [Kubernetes 레플리케이션](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Back-End%20Development/kubernetes_replica.md)
-  - [Kubernetes 서비스](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Back-End%20Development/kubernetes_service.md)
-  - [Kubernetes 볼륨](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Back-End%20Development/kubernetes_volume.md)
-  - [Kubernetes 컨피그맵과 시크릿](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Back-End%20Development/kubernetes_config_secret.md)
-  - [Kubernetes 디플로이먼트](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Back-End%20Development/kubernetes_deployment.md)
+
+* [인프라 기초](back-end-development/infra\_based.md)
+* [클라우드와 온프레미스](back-end-development/onpremises\_cloud.md)
+* [모놀리틱 아키텍처와 마이크로서비스 아키텍처](back-end-development/msa.md)
+* Kubernetes
+  * [Kubernetes 개요](back-end-development/kubernetes/kubernetes\_base.md)
+  * [Kubernetes 오브젝트 모델](back-end-development/kubernetes/kubernetes\_object.md)
+  * [Kubernetes 파드](back-end-development/kubernetes/kubernetes\_pod.md)
+  * [Kubernetes 레플리케이션](back-end-development/kubernetes/kubernetes\_replica.md)
+  * [Kubernetes 서비스](back-end-development/kubernetes/kubernetes\_service.md)
+  * [Kubernetes 볼륨](back-end-development/kubernetes/kubernetes\_volume.md)
+  * [Kubernetes 컨피그맵과 시크릿](back-end-development/kubernetes/kubernetes\_config\_secret.md)
+  * [Kubernetes 디플로이먼트](back-end-development/kubernetes/kubernetes\_deployment.md)
 
 ## Programming Language
-- Python
-  - [Python과 프로파일링](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Programming%20Language/python_profiling.md)
-  - [Python 컴파일](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Programming%20Language/python_comfile.md)
-  - [Python 비동기](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Programming%20Language/python_Async.md)
-  - [Python multiprocessing](https://github.com/mjs1995/muse-data-engineer/blob/main/doc/Programming%20Language/python_multiprocessing.md)
+
+* Python
+  * [Python과 프로파일링](programming-language/programming-language/python\_profiling.md)
+  * [Python 컴파일](programming-language/programming-language/python\_comfile.md)
+  * [Python 비동기](programming-language/programming-language/python\_async.md)
+  * [Python multiprocessing](programming-language/programming-language/python\_multiprocessing.md)
