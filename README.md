@@ -30,6 +30,7 @@
     * [Presto 튜닝](doc/batch-sql/batch-processing-1/presto\_tuning.md)
     * [Presto 쿼리 Processing](doc/batch-sql/batch-processing-1/presto\_query\_processing.md)
     * [Trino 개요](doc/batch-sql/batch-processing-1/trino\_base.md)
+    * [Trino 최적화](doc/batch-sql/batch-processing-1/trino\_tuning.md) 
   * Hive
     * [Hive 개요](doc/batch-sql/batch-processing/hive\_base.md)
     * [Hive 아키텍처](doc/batch-sql/batch-processing/hive\_architecture.md)
