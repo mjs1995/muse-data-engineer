@@ -1,4 +1,23 @@
 # 최적화 포인트
+- Spark 에는 최적화 기능들(optimizer) 을 갖추고 있습니다.
+  - 1.x 버전에서는 Rule-Based Optimizer만 갖고 있었습니다.
+  - 2.x 버전에서 Cost-Based Optimizer가 추가되었습니다.
+  - 3.x 버전에는 Adaptive Query Execution(AQE) 추가되었습니다.
+
+## AQE(Adaptive Query Execution)
+- <img width="740" alt="image" src="https://github.com/mjs1995/Book_review/assets/47103479/736776f6-2b38-4faa-9be8-4157109a8987">
+  - https://www.databricks.com/blog/2020/05/29/adaptive-query-execution-speeding-up-spark-sql-at-runtime.html
+- 실행 시간 동안 쿼리의 실행 계획을 동적으로 재조정하고 최적화합니다. AQE는 실행 계획을 최적화하기 위해 런타임 통계를 활용합니다.
+- 동적 셔플 파티션 통합(Dynamically coalescing shuffle partitions)
+  - ![image](https://github.com/mjs1995/Book_review/assets/47103479/3139546a-ee33-4f8e-9dba-cc07dcb85e3d)
+  - 셔플 이후에 생성된 파티션의 크기가 너무 작거나 불균형적인 경우, AQE는 이러한 파티션들을 동적으로 통합하여 파티션 수를 줄입니다. 이를 통해 소량의 데이터를 가진 파티션에 대한 오버헤드를 줄이고 전체 쿼리의 실행 속도를 향상시킵니다.
+- 동적 전환 조인 전략(Dynamically switching join strategies)
+  - ![image](https://github.com/mjs1995/Book_review/assets/47103479/3139546a-ee33-4f8e-9dba-cc07dcb85e3d)
+  - 조인 연산을 실행하기 전에 실제 데이터 크기를 확인하고, 이를 기반으로 가장 적합한 조인 전략 (예: broadcast join, sort-merge join)으로 동적으로 전환합니다.
+- 스큐 조인을 동적으로 최적화(Dynamically optimizing skew joins)
+  - ![image](https://github.com/mjs1995/Book_review/assets/47103479/a2da1156-e181-4c2d-be95-596a0fdbe591)
+  - 조인 연산 시 한쪽의 데이터 분포가 매우 불균형적인 경우 (즉, 스큐가 있는 경우), AQE는 이 스큐를 인식하고 해당 파티션을 세분화하여 조인 성능을 향상시킵니다.
+
 ## 최적화 포인트 
 - 코드 수준의 설계(예: RDD와 DataFrame 중 하나를 선택함)
 - 보관용 데이터

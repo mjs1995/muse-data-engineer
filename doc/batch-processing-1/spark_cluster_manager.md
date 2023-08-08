@@ -1,7 +1,19 @@
+# Spark 클러스터 
+- ![image](https://github.com/mjs1995/Book_review/assets/47103479/cfd6948e-310f-460b-a0dc-281edf5e27c1)
+  - https://learn.microsoft.com/ko-kr/azure/hdinsight/spark/apache-spark-settings
+- 스파크는 마스터/슬레이브 구조를 사용하며, 중앙 조정자인 드라이버와 여러 분산 작업 노드인 익스큐터로 구성됩니다. 드라이버는 자바 프로세스에서 동작하며, SparkContext를 생성하고, RDD를 만들며, 사용자 코드의 트랜스포메이션과 액션을 실행합니다.
+- 익스큐터는 스파크 작업의 개별 태스크를 실행합니다. 익스큐터는 스파크 애플리케이션이 실행될 때 한번 생성되고, 애플리케이션이 종료될 때까지 계속 동작합니다. 익스큐터는 애플리케이션 작업을 실행하고, 결과를 드라이버에게 반환하는 역할을 하며, 블록 매니저를 통해 사용자 프로그램에서 캐시하는 RDD를 메모리에 저장하는 역할도 합니다. RDD가 익스큐터 내부에 캐시되기 때문에, 작업의 실행이 용이해집니다.
+- 스파크에서 분산 처리를 할 때는, RDD 생성 및 변환으로 구성된 스파크 애플리케이션을 클러스터에 배포합니다. 클라이언트는 애플리케이션 배포 시 실행에 필요한 executor의 스펙을 지정합니다. Executor는 워커 노드에서 실행되어 스파크 애플리케이션을 분산 처리하는 프로세스로 이 스펙에는 CPU 코어 수, 메모리 할당량, 그리고 클러스터 내에서 실행될 executor의 수 등이 포함됩니다.
+
 # spark 클러스터 매니저 
 - ![image](https://user-images.githubusercontent.com/47103479/214573774-8e1c36bf-af5e-4118-a1b7-d26808c7cd9e.png)
 -  클라우드에서 standalone cluster mode, 하둡에서 YARN, Apache Mesos, Kubernetes에서 스파크를 사용할 수 있습니다.
   - https://medium.com/@rachit1arora/why-run-spark-on-kubernetes-51c0ccb39c9b
+- 스파크는 클러스터 환경에서 RDD를 처리하는 분산처리 플랫폼입니다. 스파크는 클러스터 리소스 관리를 위해 YARN, Mesos 또는 Spark Standalone 등의 클러스터 관리 시스템을 사용합니다. 
+- YARN은 하둡의 클러스터 관리 시스템이며, HDFS와 함께 사용될 때 데이터 지역성을 활용해 효율적인 I/O 처리를 가능하게 합니다. 
+- Mesos는 동적인 CPU 코어 할당 변경 등 세부적인 제어를 허용하는 범용 클러스터 관리 시스템입니다.  
+- Standalone은 스파크에 포함된 전용 클러스터 관리 시스템으로, 별도의 시스템 없이도 사용이 가능합니다. 클러스터 환경에서 각 머신은 마스터 노드(리소스를 관리) 또는 워커 노드(처리를 실행)로 동작합니다.
+  
 ## Standalone 
 - ![image](https://user-images.githubusercontent.com/47103479/214574048-6c3d0257-76cc-4a2f-aefd-f46cc5cf684d.png)
   - https://www.researchgate.net/figure/Spark-Standalone-clustering-system_fig2_336020411
