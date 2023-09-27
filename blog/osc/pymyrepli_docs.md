@@ -1,10 +1,14 @@
 # [OSSCA](https://www.contribution.ac/2023-ossca) 오픈소스 컨트리뷰션 아카데미
 - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/064d2377-fe5d-4e31-8893-24dbfbb8ded7)
+- 오픈소스 컨트리뷰션 아카데미는 언어, 개발문화, 시작의 두려움으로 인해 높게만 느껴지던 오픈소스에 대한 진입장벽을 허물고 선배 개발자와 함께 서로의 컨트리뷰톤을 응원하며 참여,오픈,공유,협업하는 오픈소스 문화를 직접 경험할 수 있는 멘토링 프로그램입니다.
+- <img width="716" alt="image" src="https://github.com/mjs1995/muse-data-engineer/assets/47103479/f8d0934c-3820-4f81-87e4-ca4dfe34fb0e">
+  
+  - https://www.oss.kr/ossca_23_projects/show/2d3fc657-7d79-404c-8fa7-84db9c5d4d4d
 - 2023 오픈소스 컨트리뷰션 아카데미를 참가하면서 python-mysql-repllication프로젝트의 멘티로 참가하게 되었습니다. 약 3달간의 여정으로 온/오프라인 모임을 통해서 오픈소스 기여를 하였습니다.
 - 참여 계기는 데이터 엔지니어링에 관심이 있는 다양한 분들과 협업을 하면서 개발 문화와 오픈소스에 기여하는 방식을 보고자 지원을 하였습니다. 또한 프로젝트 운영을 하면서 binlog 파일에 대해 이슈가 있었고 CDC에 관심이 있어서 세미나를 다니던 중 python-mysql-repllication의 분야가 핏이 맞아 신청을 하였습니다.
 
-# [python-mysql-replication](https://github.com/julien-duponchelle/python-mysql-replication) 프로젝트 소개
-## MySQL 데이터베이스에서 데이터 추출하는 두 가지 방법
+## [python-mysql-replication](https://github.com/julien-duponchelle/python-mysql-replication) 프로젝트 소개
+### MySQL 데이터베이스에서 데이터 추출하는 두 가지 방법
 - SQL을 사용한 전체 또는 증분 추출
   - 구현하기가 훨씬 간단하지만 자주 변경되는 대규모 데이터세트에서는 확장성이 떨어지며 전체 추출과 증분 추출 사이에도 트레이드오프가 있습니다.
   - 증분 추출이 최적의 성능에 이상적이지만 어떤 테이블에 대해서는 가능하지 않을 수 있는 몇 가지 단점과 이유가 있습니다.
@@ -15,7 +19,7 @@
   - MySQL 이진 로그는 데이터베이스에서 수행된 모든 작업에 대한 기록을 보관하는 로그입니다.
     - 구성된 방식에 따라 모든 테이블의 생성 또는 수정 사항뿐만 아니라 모든 INSERT, UPDATE 및 DELETE 작업도 기록됩니다.
     - 이진 로그의 원래 목적은 다른 MySQL 인스턴스로 데이터를 복제하기 위한 것이지만, 이진 로그의 내용은 데이터 웨어하우스로 데이터를 수집하려는 데이터 엔지니어에게 매우 매력적입니다.
-## python-mysql-replication
+### python-mysql-replication
 - 이진 로그 복제에 해당되며 MySQL 복제 프로토콜의 순수한 Python 구현입니다. 이것은 PyMYSQL 위에 구축되어 있으며, 이를 통해 데이터와 원시 SQL 쿼리를 가진 이벤트(예: 삽입, 업데이트, 삭제)를 수신할 수 있습니다.
 - ![diagrams_image_graph](https://github.com/mjs1995/muse-data-engineer/assets/47103479/a6a514ed-9780-460c-9e16-00090bb9947d)
 - master-slave 구조에서 마스터가 슬레이브에게 전송하는 데이터를 파싱하여 Python 객체를 생성합니다. 데이터의 종류에 따라 각기 다른 방법으로 파싱하고, 다른 종류의 Event 객체로 저장합니다.
@@ -66,7 +70,7 @@
       ```
   - 환경 설정이 끝나면 python-mysql-replication 라이브러리를 활용해서 MySQL 서버의 기본 binlog 파일을 읽습니다. 기본 binlog 파일 이름과 경로는 MySQL 데이터베이스의 my.cnf 파일에 저장된 log_bin 변수에 설정됩니다. 
 
-## 복제 데이터 포맷 
+### 복제 데이터 포맷 
 - MySQL에서는 실행된 SQL문을 바이너리 로그에 기록하는 Statement 방식과 변경된 데이터 자체를 기록하는 Row 방식
 - `Row` 기반 바이너리 로그 포맷
   - MySQL 서버에서 데이터 변경이 발생했을 때 변경된 값 자체가 바이너리 로그에 기록되는 방식
@@ -87,7 +91,7 @@
 - `Mixed` 포맷
   - MySQL 서버는 MIXED 포맷으로 설정되면 기본적으로는 Statement 포맷을 사용하며, 실행된 쿼리와 스토리지 엔진의 종류에 따라 필요시 자동으로 Row 포맷으로 전환해서 로그에 기록합니다.
 
-## 예제
+### 예제
 - [show master status](https://mariadb.com/kb/en/show-binlog-status/) : 원본 서버의 바이너리 로그 파일에 대한 상태 정보를 확인할 수 있습니다. 
   - ```shell
     mysql> show master status;
@@ -326,7 +330,139 @@
     /*!50530 SET @@SESSION.PSEUDO_SLAVE_MODE=0*/;    
     ```
     
-# Reference 
+## Reference 
 - [MySQL 8.0 docs](https://dev.mysql.com/doc/refman/8.0/en/)
 - [데이터 파이프라인 핵심 가이드](https://product.kyobobook.co.kr/detail/S000001766501)
 - [MySQL 8.0 2권](https://product.kyobobook.co.kr/detail/S000001766483)
+
+# PR 내용 
+- <img width="16" alt="git-merged" src="https://github.com/mjs1995/muse-data-engineer/assets/47103479/1199bcfb-b94f-4ff3-89cc-9d271da95dac"> [docs: Update README to add Featured Books](https://github.com/julien-duponchelle/python-mysql-replication/pull/413)
+- <img width="16" alt="git-merged" src="https://github.com/mjs1995/muse-data-engineer/assets/47103479/1199bcfb-b94f-4ff3-89cc-9d271da95dac"> [Add Featured Section in README](https://github.com/julien-duponchelle/python-mysql-replication/pull/457)
+- <img width="16" alt="git-merged" src="https://github.com/mjs1995/muse-data-engineer/assets/47103479/1199bcfb-b94f-4ff3-89cc-9d271da95dac"> [Update README Featured Section with AWS Blog on RDS, XA Transactions](https://github.com/julien-duponchelle/python-mysql-replication/pull/485)
+- <img width="16" alt="git-merged" src="https://github.com/mjs1995/muse-data-engineer/assets/47103479/1199bcfb-b94f-4ff3-89cc-9d271da95dac"> [Remove duplicated Affected columns output in UpdateRowsEvent](https://github.com/julien-duponchelle/python-mysql-replication/pull/478)
+- <img width="16" alt="git-merged" src="https://github.com/mjs1995/muse-data-engineer/assets/47103479/1199bcfb-b94f-4ff3-89cc-9d271da95dac"> [Enhance Testing with MySQL8 & Update GitHub Actions](https://github.com/julien-duponchelle/python-mysql-replication/pull/484)
+- <img width="16" alt="git-merged" src="https://github.com/mjs1995/muse-data-engineer/assets/47103479/1199bcfb-b94f-4ff3-89cc-9d271da95dac"> [Developed UserVarEvent and Added Statement-Based Logging Test](https://github.com/julien-duponchelle/python-mysql-replication/pull/466)
+- 문서기여, 버그수정, 기능개발 등 기여를 하였고 개인적인 기여 난이도를 기준으로 말씀드리려고 합니다.
+
+## 문서기여 
+- [데이터 파이프라인 핵심 가이드](https://product.kyobobook.co.kr/detail/S000001766501) 책을 읽었을 때 CDC 부분과 binlog에 대해서 관심이 있었던 부분이 있어서 읽을 당시에는 몰랐지만 이번에 OSSCA를 진행하면서 python-mysql-replication이 사용되었다는 것을 알게되었습니다. 관련하여 멘토님과 얘기를 하다가 프로젝트 주인장분이 프로젝트의 쓰임새에 대해서 관심이 많아서 알려드리면서 README를 업데이트를 하는건 어떠냐고 물어보았습니다.
+- ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/82ab183b-0242-4e6c-9c48-6f02ecab4f45)
+- O'REILLY에 소개되었던 프로젝트에 대해서 긍정적으로 반응을 하셔서 첫 프로젝트 PR은 [docs: Update README to add Featured Books](https://github.com/julien-duponchelle/python-mysql-replication/pull/413)로 시작을 하게 되었습니다.
+- 프로젝트를 진행하면서 책에서 소개된 내용뿐만 아니라 공신력 있는 기술블로그에 대한 소개 내용도 관심이 있어서 AWS의 사례에 대해서 추가를 하게 되었습니다. 최근에 [AWS Summit 2023](https://aws.amazon.com/ko/events/summits/seoul/)과 [AWS Data Roadshow 2023](https://pages.awscloud.com/aws-data-roadshow-2023-reg.html?trk=a063bb01-f7a1-443f-ab0d-b541b793a721&sc_channel=em) 세미나를 다녀오면서 기술블로그와 aws-sample 깃허브가 생각이 났었고 저희 프로젝트에 대해 소개를 하고 있는 내용이 있어서 위 내용 모두 PR을 올렸습니다.
+  - [Add Featured Section in README](https://github.com/julien-duponchelle/python-mysql-replication/pull/457)
+  - [Update README Featured Section with AWS Blog on RDS, XA Transactions](https://github.com/julien-duponchelle/python-mysql-replication/pull/485)
+- ![diagrams_image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/89422be7-d410-4ffb-a74f-b4d902adda54)
+- 이를 바탕으로 python-mysql-replicatino은 여러 기업에서 사용하고 있지만 snowflake 기술 블로그나 AWS에 소개된 내용으로 아키텍처를 그려보았습니다.
+
+## 버그 수정 
+- python-mysql-replication에서 이벤트 구현에 대한 기능개발을 하고 있을 때 UpdateRowsEvent에 대해서 Affected columns이 중복되어서 나타나고 있었습니다. 커밋이력을 확인한 뒤에 소스코드를 분석하였습니다.
+- ```markdown
+  BinLogEvent
+  |
+  └── RowsEvent
+      |
+      └── UpdateRowsEvent
+  ```
+- RowsEvent는 BinLogEvent를 상속받아 행 기반 이벤트를 처리하고 UpdateRowsEvent는 RowsEvent를 상속받아 업데이트 이벤트를 처리하는데 [_dump 메소드](https://github.com/23-OSSCA-python-mysql-replication/python-mysql-replication/blob/08219f740edda3923ec866ebeb92fa580e3cc571/pymysqlreplication/row_event.py#L468C9-L468C14)에서 "Affected columns" 상속되는게 중복으로 출력이 되고 있어서 PR을 올렸습니다.
+  - Remove duplicated Affected columns output in UpdateRowsEvent](https://github.com/julien-duponchelle/python-mysql-replication/pull/478)
+ 
+## 기능개발
+### MySQL8 버전 테스트 추가 및 github action 버전 업그레이드 
+- 프로젝트 진행 당시 MySQL8에 대한 테스트를 할 수 없었고 MySQL5.7버전과 MariaDB에 대해서만 진행을 할 수 있었으며 [MySQL 8.0.14](https://dev.mysql.com/doc/relnotes/mysql/8.0/en/news-8-0-14.html#:~:text=Replication%3A%20Character)버전 이후로 binlog_row_metadata=FULL이 나오면서 [OptionalMetaData에 대해서 이벤트 개발](https://github.com/julien-duponchelle/python-mysql-replication/pull/471)을 하였습니다. 관련해서는 [같은 조의 멘티님](https://seanical.tistory.com/5)의 블로그를 읽어보시면 도움되실거 같습니다. 따라서 MySQL8 버전대에 대해서 도커파일을 추가하고 테스트 코드를 수정해야 했습니다.
+- ```yaml
+  version: '3.4'
+
+  x-mysql: &mysql
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: true
+    command: >
+      mysqld
+      --log-bin=mysql-bin.log
+      --server-id 1
+      --binlog-format=row
+      --gtid_mode=on
+      --enforce-gtid-consistency=on
+  
+  x-mariadb: &mariadb
+    environment:
+      MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: 1
+    command: >
+      --log-bin=master-bin
+      --server-id=1
+      --default-authentication-plugin=mysql_native_password
+      --binlog-format=row
+  
+  services:
+    percona-5.7:
+      <<: *mysql
+      image: percona:5.7
+      ports:
+        - "3306:3306"
+  
+    percona-5.7-ctl:
+      <<: *mysql
+      image: percona:5.7
+      ports:
+        - "3307:3306"
+  
+    percona-8.0:
+      <<: *mysql
+      image: percona:8.0
+      ports:
+        - "3309:3306"
+  
+    mariadb-10.6:
+      <<: *mariadb
+      image: mariadb:10.6
+      ports:
+        - "3308:3306"
+      volumes:
+        - type: bind
+          source: ./.mariadb
+          target: /opt/key_file
+        - type: bind
+          source: ./.mariadb/my.cnf
+          target: /etc/mysql/my.cnf
+  ```
+  - [도커 컴포스 파일](https://docs.docker.com/compose/reference/#command-options-overview-and-help)은 여러 개의 컨테이너 구성 정보를 코드로 정의하고, 명령을 실행함으로써 애플리케이션의 실행환경을 구성하는 컨테이너들을 일원 관리하기 위한 툴로 docker-compose.yml 코드를 보면 [percona:8.0 이미지](https://hub.docker.com/_/percona)를 추가하였고 [percona 8](https://github.com/percona/percona-docker/blob/3f666ccdf6a9eed0e0505723fbe8b4954a105c99/percona-server-8.0/Dockerfile)은 gituhb에서 확인해보면 최신 버전을 가져오고 있는거 같습니다. (Percona Server 8.0.33 버전과 MySQL Shell 8.0.33 버전을 포함하고 있음)
+  - 해당 코드는 [YAML Anchors와 Aliases](https://yaml.org/spec/1.2.2/#3222-anchors-and-aliases)를 사용하였는데 이는 중복된 데이터 구조나 값을 재사용하기 위한 메커니즘이며, 이를 통해 파일의 크기를 줄이고 데이터의 중복을 최소화하며 파일의 가독성을 향상시켰습니다. [도커 앵커](https://docs.docker.com/compose/compose-file/10-fragments/)에서 사례를 확인할 수 있습니다.
+    - Anchors (&): 특정 노드에 이름을 붙여 재사용할 수 있게 합니다.
+    - Aliases (*): 이전에 정의한 앵커의 값을 재사용할 수 있습니다.
+    - <<: 위에서 정의된 앵커를 참조합니다.
+  - 테스트 케이스 추가
+    - docker-compose 파일에서 설정한 환경 변수와 포트 값을 사용하여 데이터베이스에 연결할 수 있게끔 신규 클래스를 만들었고 복제 기능 테스트케이스를 추가하였습니다.
+- [깃허브 액션 버전 업그레이드](https://github.com/julien-duponchelle/python-mysql-replication/pull/484)
+  - ```yaml
+    name: PyTest
+    on: [push, pull_request]
+    
+    jobs:
+      test:
+        strategy:
+          fail-fast: false
+          matrix:
+            include:
+              - {name: 'CPython 3.7', python: '3.7'}
+              - {name: 'CPython 3.11', python: '3.11'}
+              - {name: 'Pypy 3.7', python: 'pypy-3.7'}
+              - {name: 'Pypy 3.9', python: 'pypy-3.9'}
+        name: ${{ matrix.name }}
+        runs-on: ubuntu-latest
+        timeout-minutes: 2
+    
+        steps:
+          - name: Check out code
+            uses: actions/checkout@v2
+    
+          - name: Setup Python
+            uses: actions/setup-python@v2
+            with:
+              python-version: ${{ matrix.python }}
+      ```
+  - 현재 pytest github action에서 사용되고 있는 workflow 액션은 actions/checkout@v2과 actions/setup-python@v2 입니다. 여기서 Node 16의 기본 런타임은 2023년 9월 11일에 지원이 종료될 예정으로 액션을 실행할 때 마다 경고 문구가 나왔습니다. 따라서 GitHub Actions 버전의 기능과 최적화를 활용하기 위해 최신버전으로 업데이트를 진행하였습니다.
+    - <img width="1023" alt="image" src="https://github.com/mjs1995/muse-data-engineer/assets/47103479/67ce401f-8f41-4bc8-b802-e3c234fad7c2">
+    - [actions/checkout@v4](https://github.com/actions/checkout/releases) : GitHub 저장소의 코드를 체크아웃하여 GitHub Actions 실행 환경의 작업 디렉토리에 배치합니다.
+    - [actions/setup-python@v4](https://github.com/actions/setup-python/releases) : 작업 환경에 특정 버전의 Python을 설치하고 설정합니다.
+
+### UserVarEvent 신규 이벤트 구현 
+- 
