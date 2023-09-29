@@ -364,7 +364,7 @@
       └── UpdateRowsEvent
   ```
 - RowsEvent는 BinLogEvent를 상속받아 행 기반 이벤트를 처리하고 UpdateRowsEvent는 RowsEvent를 상속받아 업데이트 이벤트를 처리하는데 [_dump 메소드](https://github.com/23-OSSCA-python-mysql-replication/python-mysql-replication/blob/08219f740edda3923ec866ebeb92fa580e3cc571/pymysqlreplication/row_event.py#L468C9-L468C14)에서 "Affected columns" 상속되는게 중복으로 출력이 되고 있어서 PR을 올렸습니다.
-  - Remove duplicated Affected columns output in UpdateRowsEvent](https://github.com/julien-duponchelle/python-mysql-replication/pull/478)
+  - [Remove duplicated Affected columns output in UpdateRowsEvent](https://github.com/julien-duponchelle/python-mysql-replication/pull/478)
  
 ## 기능개발
 ### MySQL8 버전 테스트 추가 및 github action 버전 업그레이드 
@@ -465,4 +465,46 @@
     - [actions/setup-python@v4](https://github.com/actions/setup-python/releases) : 작업 환경에 특정 버전의 Python을 설치하고 설정합니다.
 
 ### UserVarEvent 신규 이벤트 구현 
-- 
+- UserVarEvent 클래스는 사용자 변수 이벤트의 세부 사항을 추출하기 위해 버퍼를 파싱하고 그 타입에 따라 값을 읽는 메서드를 제공합니다
+  - [User-var event](https://mariadb.com/kb/en/user_var_event/)
+  - [User-var event의 레이아웃](https://dev.mysql.com/doc/dev/mysql-server/latest/classbinary__log_1_1User__var__event.html#:~:text=the%20server%20code.-,%E2%97%86%C2%A0,User_var_event()%20%5B2/2%5D,-binary_log%3A%3AUser_var_event%3A%3AUser_var_event)
+- 이벤트와 관련해서 버퍼 레이아웃과 클래스 속성을 공식 문서에서 확인할 수 있습니다.
+  - UserVarEvent 버퍼 레이아웃
+    - ```shell
+      +-------------------------------------------------------------------+
+      | name_len | name | is_null | type | charset_number | val_len | val |
+      +-------------------------------------------------------------------+
+      ```
+  - UserVarEvent 클래스의 속성
+    - name_len: 사용자 변수 이름의 길이
+    - name: 사용자 변수의 이름
+    - is_null: 변수 값이 null인지 여부를 나타냅니다.
+    - type: 사용자 변수의 타입
+    - charset: 사용자 변수의 문자 집합 번호
+    - value_len: 사용자 변수의 값의 길이
+    - value: 사용자 변수의 값
+#### 생성자에서의 버퍼 파싱
+- UserVarEvent 클래스의 [__init__ 메서드](https://github.com/julien-duponchelle/python-mysql-replication/blob/5f39cb773590522b37470272fcadc7c9b2efd985/pymysqlreplication/event.py#L707-L744)는 이 버퍼 레이아웃을 파싱하는 역할을 합니다. 레이아웃에서 설명한 순서대로 값을 읽고 클래스의 해당 속성에 할당합니다.
+- 타입 처리 및 값 추출
+  - 여기서 사용자 변수의 타입별로 버퍼를 파싱하는 값이 달라집니다.
+  - |Value|Type|Example|
+    |:---:|:---:|:---:|
+    |0x00|STRING_RESULT|set @a:="foo"
+    |0x01|REAL_RESULT|set @a:= @@timestamp
+    |0x02|INT_RESULT|set @a:= 4
+    |0x03|ROW_RESULT|(not in use)
+    |0x04|DECIMAL_RESULT|set @a:=1.2345|
+  - type_to_codes_and_method 딕셔너리는 타입 코드와 해당 데이터 추출 메서드 (_read_string, _read_real, _read_int, _read_decimal, _read_default)를 매핑하는 데 사용됩니다. 타입 코드에 따라 특정 메서드가 호출되어 버퍼에서 값을 파싱합니다.
+- 타입별로 [매핑하는 방법](https://docs.python.org/ko/3/library/struct.html#struct-format-strings)에 대해 말씀드리겠습니다.
+  - ```python
+    struct.unpack("<B", ...)
+    ```
+  - struct 모듈의 unpack 함수는 주어진 형식에 따라 바이트 데이터를 언팩(해석)합니다.
+  - "<B"는 리틀 엔디안 형식의 부호 없는 1바이트 정수(unsigned char)를 나타냅니다. <는 리틀 엔디안을 나타냅니다. (리틀 엔디안은 바이트 순서가 오른쪽에서 왼쪽으로 간다는 것을 의미합니다.)
+  - B는 부호 없는 1바이트 정수(unsigned char)를 나타냅니다.
+  - [엔디언](https://ko.wikipedia.org/wiki/%EC%97%94%EB%94%94%EC%96%B8)에서 빅 엔디언은 사람이 숫자를 쓰는 방법과 같이 큰 단위의 바이트가 앞에 오는 방법이고, 리틀 엔디언은 반대로 작은 단위의 바이트가 앞에 오는 방법입니다.
+- 버퍼 레이아웃을 파싱할 때 int type과 decimal type에 대해서 이슈가 있었습니다.
+  - int
+  - deciaml
+    - [내부 패킷 객체를 사용](https://github.com/julien-duponchelle/python-mysql-replication/blob/5f39cb773590522b37470272fcadc7c9b2efd985/pymysqlreplication/row_event.py#L411C4-L458)하여 데이터를 읽으려고 했지만 
+
