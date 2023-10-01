@@ -345,7 +345,7 @@
 - 문서기여, 버그수정, 기능개발 등 기여를 하였고 개인적인 기여 난이도를 기준으로 말씀드리려고 합니다.
 
 ## 문서기여 
-- [데이터 파이프라인 핵심 가이드](https://product.kyobobook.co.kr/detail/S000001766501) 책을 읽었을 때 CDC 부분과 binlog에 대해서 관심이 있었던 부분이 있어서 읽을 당시에는 몰랐지만 이번에 OSSCA를 진행하면서 python-mysql-replication이 사용되었다는 것을 알게되었습니다. 관련하여 멘토님과 얘기를 하다가 프로젝트 주인장분이 프로젝트의 쓰임새에 대해서 관심이 많아서 알려드리면서 README를 업데이트를 하는건 어떠냐고 물어보았습니다.
+- [데이터 파이프라인 핵심 가이드](https://product.kyobobook.co.kr/detail/S000001766501) 책을 읽었을 때 CDC 부분과 binlog에 대해서 관심이 있었던 부분이 있어서 읽을 당시에는 몰랐지만 이번에 OSSCA를 진행하면서 python-mysql-replication이 사용되었다는 것을 알게 되었습니다. 관련하여 멘토님과 얘기를 하다가 프로젝트 주인장분이 프로젝트의 쓰임새에 대해서 관심이 많아서 알려드리면서 README를 업데이트를 하는 건 어떠냐고 물어보았습니다.
 - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/82ab183b-0242-4e6c-9c48-6f02ecab4f45)
 - O'REILLY에 소개되었던 프로젝트에 대해서 긍정적으로 반응을 하셔서 첫 프로젝트 PR은 [docs: Update README to add Featured Books](https://github.com/julien-duponchelle/python-mysql-replication/pull/413)로 시작을 하게 되었습니다.
 - 프로젝트를 진행하면서 책에서 소개된 내용뿐만 아니라 공신력 있는 기술블로그에 대한 소개 내용도 관심이 있어서 AWS의 사례에 대해서 추가를 하게 되었습니다. 최근에 [AWS Summit 2023](https://aws.amazon.com/ko/events/summits/seoul/)과 [AWS Data Roadshow 2023](https://pages.awscloud.com/aws-data-roadshow-2023-reg.html?trk=a063bb01-f7a1-443f-ab0d-b541b793a721&sc_channel=em) 세미나를 다녀오면서 기술블로그와 aws-sample 깃허브가 생각이 났었고 저희 프로젝트에 대해 소개를 하고 있는 내용이 있어서 위 내용 모두 PR을 올렸습니다.
@@ -363,12 +363,12 @@
       |
       └── UpdateRowsEvent
   ```
-- RowsEvent는 BinLogEvent를 상속받아 행 기반 이벤트를 처리하고 UpdateRowsEvent는 RowsEvent를 상속받아 업데이트 이벤트를 처리하는데 [_dump 메소드](https://github.com/23-OSSCA-python-mysql-replication/python-mysql-replication/blob/08219f740edda3923ec866ebeb92fa580e3cc571/pymysqlreplication/row_event.py#L468C9-L468C14)에서 "Affected columns" 상속되는게 중복으로 출력이 되고 있어서 PR을 올렸습니다.
+- RowsEvent는 BinLogEvent를 상속받아 행 기반 이벤트를 처리하고 UpdateRowsEvent는 RowsEvent를 상속받아 업데이트 이벤트를 처리하는데 [_dump 메소드](https://github.com/23-OSSCA-python-mysql-replication/python-mysql-replication/blob/08219f740edda3923ec866ebeb92fa580e3cc571/pymysqlreplication/row_event.py#L468C9-L468C14)에서 "Affected columns" 상속되는 게 중복으로 출력이 되고 있어서 PR을 올렸습니다.
   - [Remove duplicated Affected columns output in UpdateRowsEvent](https://github.com/julien-duponchelle/python-mysql-replication/pull/478)
  
 ## 기능개발
 ### MySQL8 버전 테스트 추가 및 github action 버전 업그레이드 
-- 프로젝트 진행 당시 MySQL8에 대한 테스트를 할 수 없었고 MySQL5.7버전과 MariaDB에 대해서만 진행을 할 수 있었으며 [MySQL 8.0.14](https://dev.mysql.com/doc/relnotes/mysql/8.0/en/news-8-0-14.html#:~:text=Replication%3A%20Character)버전 이후로 binlog_row_metadata=FULL이 나오면서 [OptionalMetaData에 대해서 이벤트 개발](https://github.com/julien-duponchelle/python-mysql-replication/pull/471)을 하였습니다. 관련해서는 [같은 조의 멘티님](https://seanical.tistory.com/5)의 블로그를 읽어보시면 도움되실거 같습니다. 따라서 MySQL8 버전대에 대해서 도커파일을 추가하고 테스트 코드를 수정해야 했습니다.
+- 프로젝트 진행 당시 MySQL8에 대한 테스트를 할 수 없었고 MySQL5.7 버전과 MariaDB에 대해서만 진행을 할 수 있었으며 [MySQL 8.0.14](https://dev.mysql.com/doc/relnotes/mysql/8.0/en/news-8-0-14.html#:~:text=Replication%3A%20Character) 버전 이후로 binlog_row_metadata=FULL이 나오면서 [OptionalMetaData에 대해서 이벤트 개발](https://github.com/julien-duponchelle/python-mysql-replication/pull/471)을 하였습니다. 관련해서는 [같은 조의 멘티님](https://seanical.tistory.com/5)의 블로그를 읽어보시면 도움 되실 거 같습니다. 따라서 MySQL8 버전대에 대해서 도커파일을 추가하고 테스트 코드를 수정해야 했습니다.
 - ```yaml
   version: '3.4'
 
@@ -424,8 +424,8 @@
           source: ./.mariadb/my.cnf
           target: /etc/mysql/my.cnf
   ```
-  - [도커 컴포스 파일](https://docs.docker.com/compose/reference/#command-options-overview-and-help)은 여러 개의 컨테이너 구성 정보를 코드로 정의하고, 명령을 실행함으로써 애플리케이션의 실행환경을 구성하는 컨테이너들을 일원 관리하기 위한 툴로 docker-compose.yml 코드를 보면 [percona:8.0 이미지](https://hub.docker.com/_/percona)를 추가하였고 [percona 8](https://github.com/percona/percona-docker/blob/3f666ccdf6a9eed0e0505723fbe8b4954a105c99/percona-server-8.0/Dockerfile)은 gituhb에서 확인해보면 최신 버전을 가져오고 있는거 같습니다. (Percona Server 8.0.33 버전과 MySQL Shell 8.0.33 버전을 포함하고 있음)
-  - 해당 코드는 [YAML Anchors와 Aliases](https://yaml.org/spec/1.2.2/#3222-anchors-and-aliases)를 사용하였는데 이는 중복된 데이터 구조나 값을 재사용하기 위한 메커니즘이며, 이를 통해 파일의 크기를 줄이고 데이터의 중복을 최소화하며 파일의 가독성을 향상시켰습니다. [도커 앵커](https://docs.docker.com/compose/compose-file/10-fragments/)에서 사례를 확인할 수 있습니다.
+  - [도커 컴포스 파일](https://docs.docker.com/compose/reference/#command-options-overview-and-help)은 여러 개의 컨테이너 구성 정보를 코드로 정의하고, 명령을 실행함으로써 애플리케이션의 실행환경을 구성하는 컨테이너들을 일원 관리하기 위한 툴로 docker-compose.yml 코드를 보면 [percona:8.0 이미지](https://hub.docker.com/_/percona)를 추가하였고 [percona 8](https://github.com/percona/percona-docker/blob/3f666ccdf6a9eed0e0505723fbe8b4954a105c99/percona-server-8.0/Dockerfile)은 gituhb에서 확인해 보면 최신 버전을 가져오고 있는 거 같습니다. (Percona Server 8.0.33 버전과 MySQL Shell 8.0.33 버전을 포함하고 있음)
+  - 해당 코드는 [YAML Anchors와 Aliases](https://yaml.org/spec/1.2.2/#3222-anchors-and-aliases)를 사용하였는데 이는 중복된 데이터 구조나 값을 재사용하기 위한 메커니즘이며, 이를 통해 파일의 크기를 줄이고 데이터의 중복을 최소화하며 파일의 가독성을 향상했습니다. [도커 앵커](https://docs.docker.com/compose/compose-file/10-fragments/)에서 사례를 확인할 수 있습니다.
     - Anchors (&): 특정 노드에 이름을 붙여 재사용할 수 있게 합니다.
     - Aliases (*): 이전에 정의한 앵커의 값을 재사용할 수 있습니다.
     - <<: 위에서 정의된 앵커를 참조합니다.
@@ -459,7 +459,7 @@
             with:
               python-version: ${{ matrix.python }}
       ```
-  - 현재 pytest github action에서 사용되고 있는 workflow 액션은 actions/checkout@v2과 actions/setup-python@v2 입니다. 여기서 Node 16의 기본 런타임은 2023년 9월 11일에 지원이 종료될 예정으로 액션을 실행할 때 마다 경고 문구가 나왔습니다. 따라서 GitHub Actions 버전의 기능과 최적화를 활용하기 위해 최신버전으로 업데이트를 진행하였습니다.
+  - 현재 pytest github action에서 사용되고 있는 workflow 액션은 actions/checkout@v2과 actions/setup-python@v2 입니다. 여기서 Node 16의 기본 런타임은 2023년 9월 11일에 지원이 종료될 예정으로 액션을 실행할 때마다 경고 문구가 나왔습니다. 따라서 GitHub Actions 버전의 기능과 최적화를 활용하기 위해 최신버전으로 업데이트를 진행하였습니다.
     - <img width="1023" alt="image" src="https://github.com/mjs1995/muse-data-engineer/assets/47103479/67ce401f-8f41-4bc8-b802-e3c234fad7c2">
     - [actions/checkout@v4](https://github.com/actions/checkout/releases) : GitHub 저장소의 코드를 체크아웃하여 GitHub Actions 실행 환경의 작업 디렉토리에 배치합니다.
     - [actions/setup-python@v4](https://github.com/actions/setup-python/releases) : 작업 환경에 특정 버전의 Python을 설치하고 설정합니다.
@@ -505,6 +505,84 @@
   - [엔디언](https://ko.wikipedia.org/wiki/%EC%97%94%EB%94%94%EC%96%B8)에서 빅 엔디언은 사람이 숫자를 쓰는 방법과 같이 큰 단위의 바이트가 앞에 오는 방법이고, 리틀 엔디언은 반대로 작은 단위의 바이트가 앞에 오는 방법입니다.
 - 버퍼 레이아웃을 파싱할 때 int type과 decimal type에 대해서 이슈가 있었습니다.
   - int
+    - [MySQL에서 BIGINT UNSIGNED와 BIGINT의 범위](https://dev.mysql.com/doc/refman/8.0/en/integer-types.html)는 다음과 같습니다.
+      - BIGINT UNSIGNED: 0 to 18,446,744,073,709,551,615
+      - BIGINT: -9,223,372,036,854,775,808 to 9,223,372,036,854,775,807
+    - 현재 mysql에서 UNSIGNED일때 18446744073709551615이 -1로 반환되는 이슈가 있었습니다. 관련해서는 [mysql 리포트](https://bugs.mysql.com/bug.php?id=79295)와 [mysql 공식 문서](https://dev.mysql.com/doc/refman/8.0/en/cast-functions.html) 문서를 참고하시면 될 거 같습니다. 
+    - ```bash
+      mysql> SELECT CAST(1-2 AS UNSIGNED)
+      -> 18446744073709551615
+      mysql> SELECT CAST(CAST(1-2 AS UNSIGNED) AS SIGNED);
+      -> -1
+      mysql> select cast(-1 as unsigned);
+      +----------------------+
+      | cast(-1 as unsigned) |
+      +----------------------+
+      | 18446744073709551615 |
+      +----------------------+
+      1 row in set (0.00 sec)
+      ```
+    - -1로 나오는 이슈를 어떻게 처리할지 고민하며 바이트 덤프를 기반으로 데이터를 파싱해 봤습니다.
+    - ```shell
+      00 26 11 EE 64 0E 01 00 00 00 2F 00 00 00 15 0A .&..d...../.....
+      00 00 00 00|01 00 00 00|61|00|02|FF 00 00 00|08 ........a.......
+      00 00 00|FF FF FF FF FF FF FF FF|01|16 25 04 29 .............%.)
+      ```
+      - name_len: 01 00 00 00 → 리틀 엔디안 형식으로 1입니다.
+      - name: 61 → ASCII로 'a'입니다.
+      - is_null: 00 → False입니다.
+      - type: 02 → INT_RESULT입니다.
+      - charset: FF 00 00 00 → 생략됩니다.
+      - val_len: 08 00 00 00 → 값의 길이는 8바이트입니다.
+      - val: FF FF FF FF FF FF FF FF → 18446744073709551615입니다.
+      - flag: 01 → UNSIGNED_F입니다.
+    - 바이트 덤프를 기반으로 데이터를 파싱을 했을 때, flag가 01일 때 UNSIGNED로 이를 기반으로 int 타입을 파싱하였습니다. 따라서 flags를 활용하기 위해 임시버퍼를 사용하였고 [flag가 1일 때와 아닐 때를 리틀 엔디안을 활용해 unsinged와 singed를 구분해서 언패킹](https://github.com/julien-duponchelle/python-mysql-replication/blob/5f39cb773590522b37470272fcadc7c9b2efd985/pymysqlreplication/event.py#L771-L776)하였습니다.
   - deciaml
-    - [내부 패킷 객체를 사용](https://github.com/julien-duponchelle/python-mysql-replication/blob/5f39cb773590522b37470272fcadc7c9b2efd985/pymysqlreplication/row_event.py#L411C4-L458)하여 데이터를 읽으려고 했지만 
-
+    - [내부 패킷 객체를 사용](https://github.com/julien-duponchelle/python-mysql-replication/blob/5f39cb773590522b37470272fcadc7c9b2efd985/pymysqlreplication/row_event.py#L411C4-L458)하여 데이터를 읽으려고 했지만 위에 int 타입의 경우 flags를 활용해야 하므로, 임시 버퍼를 사용해서 바이트를 받아서 decimal로 파싱을 하는 메소드를 개발해야 했습니다. deciaml은 음수일때와 양수일때를 구분해서 파싱을 했고 음수일때 기존 코드에서 -4444.2343243245 의 경우 XOR 연산사 byte 범위 벖어나서 [0-255 범위로 제한](https://github.com/julien-duponchelle/python-mysql-replication/blob/5f39cb773590522b37470272fcadc7c9b2efd985/pymysqlreplication/util/bytes.py#L65C34-L66C25) 하였습니다. 
+- charset에 대해서도 mysql5.7, mysql8, mariadb에서 매번 바뀌는 이슈가 있었습니다.
+  - 이는 환경설정에서 charset과 collation에 영향을 받는 것을 확인했습니다.
+  - MySQL은 다양한 문자셋을 지원하며, 그중 여러 유니코드 문자셋을 포함하고 있습니다. 콜레이션은 특정 문자셋의 문자들을 어떻게 비교하고 정렬할지를 결정하는 규칙의 집합입니다.
+  - 사용 가능한 문자셋을 확인하려면 INFORMATION_SCHEMA CHARACTER_SETS 테이블 또는 SHOW CHARACTER SET 문장을 사용할 수 있으며 사용 가능한 콜레이션을 확인하려면 INFORMATION_SCHEMA COLLATIONS 테이블 또는 SHOW COLLATION 문장을 사용할 수 있습니다. 관련해서는 [공식 문서](https://dev.mysql.com/doc/refman/8.0/en/charset-mysql.html
+)를 확인해 주시면 될 거 같습니다.
+  - Database를 생성할 때 문자셋과 콜레이션을 지정하면 같은 값을 반환하는 것을 확인했습니다. 
+  - ```shell
+    mysql> CREATE DATABASE test CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci;
+    Query OK, 1 row affected (0.02 sec)
+    
+    mysql> SHOW VARIABLES LIKE 'character_set%';
+    +--------------------------+-------------------------------------+
+    | Variable_name            | Value                               |
+    +--------------------------+-------------------------------------+
+    | character_set_client     | latin1                              |
+    | character_set_connection | latin1                              |
+    | character_set_database   | utf8mb4                             |
+    | character_set_filesystem | binary                              |
+    | character_set_results    | latin1                              |
+    | character_set_server     | latin1                              |
+    | character_set_system     | utf8                                |
+    | character_sets_dir       | /usr/share/percona-server/charsets/ |
+    +--------------------------+-------------------------------------+
+    8 rows in set (0.03 sec)
+    
+    | mysql-bin.000003 | 5082 | User var       |         1 |        5135 | @`test_user_var`=_latin1 0x666F6F COLLATE latin1_swedish_ci                                         |
+    
+    mysql> SET NAMES 'utf8mb3';
+    Query OK, 0 rows affected (0.01 sec)
+    
+    mysql> SHOW VARIABLES LIKE 'character_set%';
+    +--------------------------+-------------------------------------+
+    | Variable_name            | Value                               |
+    +--------------------------+-------------------------------------+
+    | character_set_client     | utf8                                |
+    | character_set_connection | utf8                                |
+    | character_set_database   | utf8mb4                             |
+    | character_set_filesystem | binary                              |
+    | character_set_results    | utf8                                |
+    | character_set_server     | latin1                              |
+    | character_set_system     | utf8                                |
+    | character_sets_dir       | /usr/share/percona-server/charsets/ |
+    +--------------------------+-------------------------------------+
+    8 rows in set (0.03 sec)
+    ```
+- squash merge를 통해서 압축해서 커밋을 한 뒤에 [PR](https://github.com/julien-duponchelle/python-mysql-replication/pull/466)을 올렸습니다.
+- python-mysql-replication 프로젝트에 기여하면서 다양한 개발 경험을 얻었습니다. 이 과정에서는 기술적 지식을 획득하는 것뿐만 아니라, 오픈소스 커뮤니티와의 협업에 대한 인사이트 또한 얻을 수 있었습니다. 오픈소스에 기여하는 것은 코드 작성뿐만 아니라 지식 공유, 협업, 함께 성장하는 커뮤니티의 일원이 되어가는 것 같습니다. OSSCA 프로그램을 통해 멘토 및 동료 멘티들과의 교류 과정에서 많은 것을 배우고, 개인적으로 큰 성장을 이룰 수 있었던 것이 무척 값진 경험으로 남았습니다.
