@@ -340,8 +340,9 @@
 - <img width="16" alt="git-merged" src="https://github.com/mjs1995/muse-data-engineer/assets/47103479/1199bcfb-b94f-4ff3-89cc-9d271da95dac"> [Add Featured Section in README](https://github.com/julien-duponchelle/python-mysql-replication/pull/457)
 - <img width="16" alt="git-merged" src="https://github.com/mjs1995/muse-data-engineer/assets/47103479/1199bcfb-b94f-4ff3-89cc-9d271da95dac"> [Update README Featured Section with AWS Blog on RDS, XA Transactions](https://github.com/julien-duponchelle/python-mysql-replication/pull/485)
 - <img width="16" alt="git-merged" src="https://github.com/mjs1995/muse-data-engineer/assets/47103479/1199bcfb-b94f-4ff3-89cc-9d271da95dac"> [Remove duplicated Affected columns output in UpdateRowsEvent](https://github.com/julien-duponchelle/python-mysql-replication/pull/478)
-- <img width="16" alt="git-merged" src="https://github.com/mjs1995/muse-data-engineer/assets/47103479/1199bcfb-b94f-4ff3-89cc-9d271da95dac"> [Enhance Testing with MySQL8 & Update GitHub Actions](https://github.com/julien-duponchelle/python-mysql-replication/pull/484)
 - <img width="16" alt="git-merged" src="https://github.com/mjs1995/muse-data-engineer/assets/47103479/1199bcfb-b94f-4ff3-89cc-9d271da95dac"> [Developed UserVarEvent and Added Statement-Based Logging Test](https://github.com/julien-duponchelle/python-mysql-replication/pull/466)
+- <img width="16" alt="git-merged" src="https://github.com/mjs1995/muse-data-engineer/assets/47103479/1199bcfb-b94f-4ff3-89cc-9d271da95dac"> [Enhance Testing with MySQL8 & Update GitHub Actions](https://github.com/julien-duponchelle/python-mysql-replication/pull/484)
+- <img width="16" alt="git-merged" src="https://github.com/mjs1995/muse-data-engineer/assets/47103479/1199bcfb-b94f-4ff3-89cc-9d271da95dac"> [Modify test structure](https://github.com/julien-duponchelle/python-mysql-replication/pull/502)
 - 문서기여, 버그수정, 기능개발 등 기여를 하였고 개인적인 기여 난이도를 기준으로 말씀드리려고 합니다.
 
 ## 문서기여 
@@ -463,6 +464,105 @@
     - <img width="1023" alt="image" src="https://github.com/mjs1995/muse-data-engineer/assets/47103479/67ce401f-8f41-4bc8-b802-e3c234fad7c2">
     - [actions/checkout@v4](https://github.com/actions/checkout/releases) : GitHub 저장소의 코드를 체크아웃하여 GitHub Actions 실행 환경의 작업 디렉토리에 배치합니다.
     - [actions/setup-python@v4](https://github.com/actions/setup-python/releases) : 작업 환경에 특정 버전의 Python을 설치하고 설정합니다.
+
+### github action pytest 개선
+#### 단위 테스트
+- 단위 테스트 프레임워크와 라이브러리
+  - unittest는 파이썬의 표준 라이브러리이고 두 번째 pytest는 pip를 통해 설치해야 하는 라이브러리
+  - 테스트 시나리오를 다루는 것은 unittest만으로도 충분할 것입니다. 왜냐하면 다양한 헬퍼 기능을 제공하기 때문입니다. 그러나 외부 시스템에 연결하는 등의 의존성이 많은 경우 테스트 케이스를 파라미터화할 수 있는 픽스처(fixture)라는 패치 객체가 필요하며 이렇게 보다 복잡한 옵션이 필요한 경우는 pytest가 적합합니다.
+    - unittest
+      - unittest 모듈은 자바의 JUnit을 기반으로 하며 JUnit은 Smaltalk의 아이디어를 기반으로 만들어졌으므로 객체 지향적입니다. 이러한 이유로 테스트는 객체를 사용해 작성되며 클래스의 시나리오별로 테스트를 그룹화하는 것이 일반적입니다.
+      - 가장 일반적인 메서드는 실제 실행 값과 예상 값을 비교하는 assertEquals(<actual>, <expected>[, message])
+      - 예외적인 상황이 발생하면 잘못된 가정 아래 실행을 계속하는 것보다는 예외를 발생시키고 호출자에게 바로 알려주는 것이 좋습니다. 이것이 assertRaises 메서드가 확인하려는 것입니다.
+    - pytest
+      - 차이점은 unittest 처럼 테스트 시나리오를 클래스로 만들고 객체 지향 모델을 생성하는 것이 가능하지만 필수 사항이 아니며, 단순히 assert 비교만으로 단위 테스트를 식별하고 결과를 보고하는 것이 가능합니다.
+      - 픽스처(Fixture)
+        - pytest의 가장 큰 장점 중 하나는 재사용 가능한 기능을 쉽게 만들 수 있다는 점입니다.
+        - 테스트에서 사용될 때는 테스트 사전/사후에 사용 가능한 리소스 또는 모듈을 뜻합니다.
+  - 더욱더 자세한 설명을 원하면 [파이썬 클린코드 2nd Edition](https://github.com/mjs1995/Book_review/blob/main/%ED%8C%8C%EC%9D%B4%EC%8D%AC%20%ED%81%B4%EB%A6%B0%EC%BD%94%EB%93%9C%202nd%20Edition.md) 책을 읽어보시는것을 추천드립니다.
+#### [pytest Fixtures](https://docs.pytest.org/en/latest/reference/fixtures.html#autouse-order)
+- pytest의 fixture는 테스트 코드의 재사용성을 높이기 위해 사용되며, 테스트 코드 실행 전 특정 설정이나 값을 설정할 수 있게 합니다.
+- fixture는 여러 테스트에서 공용으로 사용될 수 있으며, 특정 scope 내에서만 사용가능합니다.
+- pytest가 테스트를 실행하려고 할 때 3가지 요소의 픽스처 실행 순서를 고려합니다.
+  - scope
+  - dependencies
+  - autouse
+    - autouse fixture는 정의된 scope 안에 있는 테스트에만 영향을 주며 scope 내에서 먼저 실행됩니다.
+  - ```python
+    class PyMySQLReplicationTestCase(base):
+      def ignoredEvents(self):
+          return []
+
+      @pytest.fixture(autouse=True)
+      def setUpDatabase(self, get_db):
+          databases = get_databases()
+          # For local testing, set the get_dbms parameter to one of the following values: 'mysql-5', 'mysql-8', mariadb-10'.
+          # This value should correspond to the desired database configuration specified in the 'config.json' file.
+          self.database = databases[get_db]
+    ```
+#### [conftest.py](https://docs.pytest.org/en/6.2.x/writing_plugins.html?highlight=conftest%20py#conftest-py-local-per-directory-plugins)
+- conftest.py 파일은 한 디렉토리에 있는 모든 테스트에 fixture를 제공하는 수단입니다.
+- conftest.py에 정의된 fixture는 해당 패키지의 어떤 테스트에서도 import 없이 사용될 수 있습니다.(pytest가 자동으로 검색합니다.)
+- 여러 conftest.py가 중첩된 디렉토리 구조를 가질 수 있으며, 각 디렉토리의 conftest.py는 상위 디렉토리의 conftest.py에서 제공하는 fixture에 추가하여 자체 fixture를 제공할 수 있습니다.
+- ```python
+  import pytest
+
+
+  def pytest_addoption(parser):
+      parser.addoption("--db", action="store", default="mysql-5")
+
+
+  @pytest.fixture
+  def get_db(request):
+      return request.config.getoption("--db")
+  ```
+- [pytest_addoption](https://docs.pytest.org/en/latest/reference/reference.html#pytest.hookspec.pytest_addoption)
+  - pytest_addoption은 pytest 초기화 단계에서 커맨드라인 옵션 및 설정 값을 등록하는 데 사용됩니다
+  - parser.addoption(...): 커맨드라인 옵션을 등록하며 [argparse](https://docs.python.org/ko/3/library/argparse.html)의 add_argument() 함수가 받는 속성과 동일합니다
+  - 플러그인 또는 테스트의 루트 디렉토리에 위치한 conftest.py 파일에서만 구현되어야 합니다.
+#### pytest keyword expressions
+- [pytest -k](https://docs.pytest.org/en/latest/how-to/usage.html#specifying-which-tests-to-run)
+- 이 표현식은 대소문자를 구분하지 않으며, Python 연산자를 포함할 수 있습니다.
+- EXPRESSION 부분에는 파일명, 클래스명, 함수명 등의 문자열을 포함하여 조건을 지정할 수 있습니다.
+```shell
+env:
+  PYTEST_SKIP_OPTION: "not test_no_trailing_rotate_event and not test_end_log_pos and not test_query_event_latin1"
+
+pytest -k "$PYTEST_SKIP_OPTION"
+```
+- test_no_trailing_rotate_event, test_end_log_pos, test_query_event_latin1라는 문자열이 포함되지 않은 테스트를 선택하여 실행합니다.
+#### pytest markers
+- [pytest -m](https://docs.pytest.org/en/latest/how-to/mark.html#mark)
+- pytest -m 옵션은 마커 표현식을 사용하여 테스트를 선택합니다.
+- MARKER 부분에는 미리 정의된 마커의 이름을 지정합니다.
+- ```shell
+  pytest -k "$PYTEST_SKIP_OPTION" -m mariadb
+  ```
+- @pytest.mark.mariadb 데코레이터가 지정된 테스트만 선택하여 실행합니다.
+- ```python
+  @pytest.mark.mariadb
+  class TestMariadbBinlogStreamReader(base.PyMySQLReplicationTestCase):
+      def setUp(self):
+          super().setUp()
+          if not self.isMariaDB():
+              self.skipTest("Skipping the entire class for MariaDB")
+
+  @pytest.mark.mariadb
+  class TestOptionalMetaData(base.PyMySQLReplicationTestCase):
+      def setUp(self):
+          super(TestOptionalMetaData, self).setUp()
+          self.stream.close()
+          self.stream = BinLogStreamReader(
+              self.database,
+              server_id=1024,
+              only_events=(TableMapEvent,),
+          )
+          if not self.isMySQL8014AndMore():
+              self.skipTest("Mysql version is under 8.0.14 - pass TestOptionalMetaData")
+          self.execute("SET GLOBAL binlog_row_metadata='FULL';")
+  ```
+- 위의 코드에서는 TestMariadbBinlogStreamReader와 TestOptionalMetaData 클래스에 대해서만 pytest가 실행됩니다.
+- mysql5.7, mysql5.7-ctl, mysql8, mariadb에 대해서 [테스트 코드 구조 개선 및 github action에 대해서 pr](https://github.com/julien-duponchelle/python-mysql-replication/pull/502)을 올렸습니다.
 
 ### UserVarEvent 신규 이벤트 구현 
 - UserVarEvent 클래스는 사용자 변수 이벤트의 세부 사항을 추출하기 위해 버퍼를 파싱하고 그 타입에 따라 값을 읽는 메서드를 제공합니다
