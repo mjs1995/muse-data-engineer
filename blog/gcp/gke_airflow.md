@@ -147,3 +147,58 @@
 - ```shell
   mun_js@cloudshell:~ (ggke-401900)$ kubectl port-forward svc/airflow-web -n airflow 8080:8080
   ````
+- 패키지 검색
+  - Airflow 웹 서버나 스케줄러의 파드에서 apache-airflow-providers-google 라이브러리가 설치되었는지 확인하려면 파드에 직접 접속해서 Python 패키지 목록에서 apache-airflow-providers-google를 검색합니다.
+  - ```shell
+    mun_js@cloudshell:~ (ggke-401900)$ kubectl exec -it airflow-web-6d6759b8cf-5bcf7 -n airflow -- /bin/bash
+    Defaulted container "airflow-web" out of: airflow-web, check-db (init), wait-for-db-migrations (init)
+    airflow@airflow-web-6d6759b8cf-6h8rd:/opt/airflow$ pip list | grep apache-airflow-providers-google
+    apache-airflow-providers-google          10.2.0
+    
+    [notice] A new release of pip is available: 23.1.2 -> 23.3
+    [notice] To update, run: python -m pip install --upgrade pip
+    ```
+- helm 활용
+  - helm list 명령을 사용하여 현재 클러스터에 설치된 모든 Helm release를 나열할 수 있습니다.
+  - ```shell
+    mun_js@cloudshell:~/terraform-airflow-gke (ggke-401900)$ helm list -n airflow
+    NAME    NAMESPACE       REVISION        UPDATED                                STATUS   CHART           APP VERSION
+    airflow airflow         1               2023-10-18 15:02:06.51287727 +0000 UTC failed   airflow-8.8.0   2.6.3
+    ```
+  - 특정 Helm release의 값을 확인할 수 있습니다.
+  - ```shell
+    mun_js@cloudshell:~/terraform-airflow-gke (ggke-401900)$ kubectl get configmap -n airflow
+    NAME                   DATA   AGE
+    airflow-redis          3      43m
+    airflow-redis-health   6      43m
+    kube-root-ca.crt       1      4h39m
+    ```
+
+## 클러스터 삭제 시
+- gke 클러스터를 삭제할 때 현재 Terraform 상태 파일(terraform.tfstate)에 저장된 리소스의 목록을 표시합니다.
+  - ```shell
+    mun_js@cloudshell:~/terraform-airflow-gke (ggke-401900)$ terraform state list
+    data.google_client_config.default
+    google_container_cluster.primary
+    helm_release.airflow
+    kubernetes_namespace.airflow
+  
+  
+    mun_js@cloudshell:~/terraform-airflow-gke (ggke-401900)$ terraform state rm data.google_client_config.default
+    Removed data.google_client_config.default
+    Successfully removed 1 resource instance(s).
+    ```
+  - ```shell
+    terraform state list
+    ```
+    - 이 명령어는 현재 Terraform 상태 파일(terraform.tfstate)에 저장된 리소스의 목록을 표시합니다.
+
+  - ```shell
+    terraform state rm data.google_client_config.default
+    ```
+    - terraform state rm 명령어는 Terraform의 상태 파일에서 특정 리소스를 제거하는데 사용됩니다. 여기서는 data.google_client_config.default 리소스를 상태 파일에서 제거하고 있습니다.
+
+  - ```shell
+    terraform refresh
+    ```
+    - 현재 Terraform 코드와 실제 클라우드 환경의 리소스 상태를 비교하여 상태 파일을 최신 상태로 업데이트하려고 합니다.
