@@ -185,6 +185,51 @@
     Rollback was a success! Happy Helming!
     ```
 
+# Webhooks 생성 및 Slack으로 결과 전달하기
+- Webhooks 생성하기
+  - [slack api](https://api.slack.com/messaging/webhooks)웹사이트에 접속해서 Webhook URL을 생성합니다.
+  - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/d424fb5e-660c-4cdb-b155-04f12d9a78c4)
+- Slack으로 알림 전달
+  - Apache Airflow를 사용하여 Directed Acyclic Graph (DAG)를 정의하고, 작업(task)의 실패 및 성공 시 Slack으로 알림을 보내는 방법은 다음과 같습니다.
+  - Airflow UI 설정: Airflow UI에서 'Connections'로 이동하여 새로운 연결(record)을 추가합니다.
+    - Connection ID: slack_webhook_conn_id (이 ID는 DAG 소스 코드 내에서 사용됩니다.)
+    - Connection Type: Slack Incoming Webhook
+    - Webhook Token: Webhooks 생성 시 얻은 URL을 입력합니다.
+    - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/2152489e-cd70-4a2a-b8fa-be8ccc0e4054)
+  - DAG 실행 및 확인:
+    - Slack Incoming Webhook이 Connections에 추가되었으면, 예제 DAG를 실행하여 설정한 Slack 채널에 알림이 올바르게 도착하는지 확인합니다.
+    - 이 과정은 [Airflow Callbacks](https://airflow.apache.org/docs/apache-airflow/stable/administration-and-deployment/logging-monitoring/callbacks.html) 함수와 [Airflow Slack Providers](https://airflow.apache.org/docs/apache-airflow-providers-slack/stable/index.html)를 사용하여 구성되며, Sidecar 패턴을 이용하여 GitHub와 연동됩니다.
+    - ```python
+      from airflow import DAG
+      from airflow.operators.python import PythonOperator
+      from airflow.providers.slack.operators.slack_webhook import SlackWebhookOperator
+      from airflow.utils.dates import days_ago
+
+      from datetime import datetime, timedelta
+      import requests
+      import logging
+      import json
+
+      dag = DAG(
+          dag_id="slack_test",
+          start_date=days_ago(1),
+          max_active_runs=1,
+          catchup=False,
+          schedule_interval="@once",
+      )
+
+      send_slack_message = SlackWebhookOperator(
+          task_id="send_slack",
+          slack_webhook_conn_id="slack_webhook",
+          message="Hello slack",
+          dag=dag,
+      )
+
+      send_slack_message
+      ```
+    - 다음과 같은 알림 메시지를 받게 됩니다.
+      - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/ab8a59d3-ff36-46fb-993e-6c00294feb71)
+
 # Terraform을 활용한 Airflow 배포 
 - 테라폼을 활용해서 gke 클러스터를 생성하고 airflow helm차트를 배포해보려고 합니다.
 ## 서비스 계정 생성 및 역할 부여
