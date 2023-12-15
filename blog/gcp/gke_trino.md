@@ -34,7 +34,7 @@
     GRANT ALL PRIVILEGES ON test.* TO 'mjs'@'%';
     FLUSH PRIVILEGES;
     ```
-    
+
 ## Hive Metastore 설정
 - Hive Metastore를 위한 Kubernetes 설정(hive_meta_mysql.yaml)을 만듭니다. 이는 MySQL 데이터베이스를 사용하여 메타데이터를 저장하는 방식입니다.
 - Metastore의 MySQL 데이터베이스 설정을 위한 Kubernetes 리소스(hive_meta_mysql.yaml)를 정의합니다.
@@ -118,3 +118,60 @@
   - ```shell
     kubectl apply -f hive_meta_mysql.yaml
     ```
+
+# Trino를 사용하여 MinIO에 저장된 데이터 쿼리하기(2) - Hive Metastore 배포
+## Dockerfile 생성
+- Hive Metastore를 실행하기 위한 Docker 이미지를 만들기 위한 Dockerfile을 작성합니다.
+  - [하둡](https://downloads.apache.org/hive/)과 [hive](https://hadoop.apache.org/releases.html), [mysql 커넥터](https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/8.0.33/)의 경우 링크에서 확인할 수 있습니다.
+  - ```Docker
+    FROM openjdk:11-slim
+
+    ARG HADOOP_VERSION=3.2.1
+
+    RUN apt-get update && apt-get install -y curl --no-install-recommends && \
+            rm -rf /var/lib/apt/lists/*
+
+    RUN curl https://archive.apache.org/dist/hadoop/common/hadoop-$HADOOP_VERSION/hadoop-$HADOOP_VERSION.tar.gz \
+            | tar xvz -C /opt/  \
+            && ln -s /opt/hadoop-$HADOOP_VERSION /opt/hadoop \
+            && rm -r /opt/hadoop/share/doc
+
+    RUN ln -s /opt/hadoop/share/hadoop/tools/lib/hadoop-aws* /opt/hadoop/share/hadoop/common/lib/ && \
+        ln -s /opt/hadoop/share/hadoop/tools/lib/aws-java-sdk* /opt/hadoop/share/hadoop/common/lib/
+
+    ENV HADOOP_HOME="/opt/hadoop"
+    ENV PATH="/opt/spark/bin:/opt/hadoop/bin:${PATH}"
+
+    RUN curl https://repo1.maven.org/maven2/org/apache/hive/hive-standalone-metastore/3.1.2/hive-standalone-metastore-3.1.2-bin.tar.gz \
+            | tar xvz -C /opt/ \
+            && ln -s /opt/apache-hive-metastore-3.1.2-bin /opt/hive-metastore
+
+    RUN curl -L https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/8.0.33/mysql-connector-j-8.0.33.jar \
+        -o /opt/mysql-connector-j-8.0.33.jar \
+        && ln -s /opt/mysql-connector-j-8.0.33.jar /opt/hadoop/share/hadoop/common/lib/ \
+        && ln -s /opt/mysql-connector-j-8.0.33.jar /opt/hive-metastore/lib/
+
+    RUN rm /opt/hive-metastore/lib/guava-19.0.jar && \
+            ls -lah /opt/hadoop/share/hadoop/common/lib/ && \
+            cp /opt/hadoop/share/hadoop/common/lib/guava-27.0-jre.jar /opt/hive-metastore/lib/ && \
+            cp /opt/hadoop/share/hadoop/tools/lib/hadoop-aws-3.2.1.jar /opt/hive-metastore/lib/ && \
+            cp /opt/hadoop/share/hadoop/tools/lib/aws-java-sdk-bundle-1.11.375.jar /opt/hive-metastore/lib/
+
+    CMD ["/opt/hive-metastore/bin/start-metastore"]
+    ```
+
+## Docker 배포
+- Dockerfile을 사용하여 Hive Metastore 이미지를 빌드하고, 이를 Docker Hub 또는 Google Container Registry에 푸시합니다.
+- 로컬 Docker 환경 또는 Kubernetes 클러스터에서 이미지를 실행합니다.
+  - Docker 이미지 빌드
+    - ```shell
+      docker build -t hive-metastore .
+      ```
+  - Docker 이미지 푸시
+    - ```shell
+      docker push hive-metastore
+      ```
+  - Docker 컨테이너 실행
+    - ```shell
+      docker run -d -p 9083:9083 hive-metastore
+      ```
