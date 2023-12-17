@@ -175,3 +175,54 @@
     - ```shell
       docker run -d -p 9083:9083 hive-metastore
       ```
+- 로컬에서 빌드한 Docker 이미지를 GCR에 업로드할 수 있습니다.
+  - Docker 이미지 빌드
+    - ```shell
+      docker build -t gcr.io/ggke-401900/hive-metastore .
+      ```
+  - Docker 이미지 푸시
+    - ```shell
+      docker push gcr.io/ggke-401900/hive-metastore
+      ```
+- metastore.xml은 Hive 메타스토어 서비스에 대한 중요한 설정을 포함하는 XML 파일입니다. 이 파일은 Hive 메타스토어가 어떻게 데이터베이스와 연결되고, 어떤 드라이버를 사용하는지 추가적인 설정 옵션들을 정의합니다.
+  - ```shell
+    kubectl create configmap metastore-cfg --from-file=metastore.xml -n hive
+    ```
+  - metastore.xml은 다음과 같습니다.
+  - ```xml
+    <configuration>
+    <property>
+      <name>metastore.thrift.uris</name>
+      <value>thrift://localhost:9083</value>
+      <description>Thrift URI for the remote metastore. Used by metastore client to connect to remote metastore.</description>
+    </property>
+    <property>
+      <name>metastore.task.threads.always</name>
+      <value>org.apache.hadoop.hive.metastore.events.EventCleanerTask</value>
+    </property>
+    <property>
+      <name>metastore.expression.proxy</name>
+      <value>org.apache.hadoop.hive.metastore.DefaultPartitionExpressionProxy</value>
+    </property>
+    <property>
+      <name>javax.jdo.option.ConnectionURL</name>
+      <value>jdbc:mysql://mysql.mysql.svc.cluster.local:3306/test?createdatabaseifnotexist=true&amp;useSSL=false</value>
+    </property>
+    <property>
+      <name>javax.jdo.option.ConnectionDriverName</name>
+      <value>com.mysql.cj.jdbc.Driver</value>
+    </property>
+    <property>
+      <name>javax.jdo.option.ConnectionUserName</name>
+      <value>mjs</value>
+    </property>
+    <property>
+      <name>javax.jdo.option.ConnectionPassword</name>
+      <value>1234</value>
+    </property>
+    <property>
+      <name>fs.s3a.server-side-encryption-algorithm</name>
+      <value>AES256</value>
+    </property>
+  </configuration>
+    ```
