@@ -224,5 +224,107 @@
       <name>fs.s3a.server-side-encryption-algorithm</name>
       <value>AES256</value>
     </property>
-  </configuration>
+    <property>
+      <name>fs.s3a.endpoint</name>
+      <value>http://minio-service.minio-dev.svc.cluster.local:9000</value>
+    </property>
+    <property>
+      <name>fs.s3a.access.key</name>
+      <value>minioadmin</value>
+    </property>
+    <property>
+      <name>fs.s3a.secret.key</name>
+      <value>minioadmin</value>
+    </property>
+    <property>
+      <name>fs.s3a.path.style.access</name>
+      <value>true</value>
+    </property>
+    <property>
+      <name>fs.s3a.impl</name>
+      <value>org.apache.hadoop.fs.s3a.S3AFileSystem</value>
+    </property>
+    </configuration>
+    ```
+- Hive Metastore 초기화 (hive-initschema.yaml)
+  - Hive Metastore 스키마 초기화를 위한 Kubernetes Job을 정의합니다.
+  - MySQL 데이터베이스에 연결하여 필요한 스키마를 생성합니다.
+  - ```yaml
+    apiVersion: batch/v1
+    kind: Job
+    metadata:
+      name: hive-initschema
+      namespace: hive
+    spec:
+      template:
+        spec:
+          containers:
+          - name: hivemeta
+            image: gcr.io/ggke-401900/hive-metastore
+            command: ["/opt/hive-metastore/bin/schematool"]
+            args: ["--verbose", "-initSchema", "-dbType", "mysql", "-userName", "mjs",
+              "-passWord", "1234", "-url", "jdbc:mysql://mysql.mysql.svc.cluster.local:3306/test?useSSL=false"]
+          restartPolicy: Never
+      backoffLimit: 4
+    ```
+  - yaml 파일을 적용합니다.
+  - ```shell
+    kubectl apply -f hive-initschema.yaml
+    ```
+- Metastore 배포 (meta.yaml)
+  - Hive Metastore 서비스를 위한 Kubernetes Deployment와 Service를 정의합니다.
+  - 이 설정은 Trino가 Hive Metastore와 통신할 수 있도록 합니다.
+  - ```yaml
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: metastore
+      namespace: hive
+    spec:
+      selector:
+        matchLabels:
+          app: metastore
+      strategy:
+        type: Recreate
+      template:
+        metadata:
+          labels:
+            app: metastore
+        spec:
+          containers:
+          - name: metastore
+            image: gcr.io/ggke-401900/hive-metastore
+            ports:
+            - containerPort: 9083
+            volumeMounts:
+            - name: metastore-cfg-vol
+              mountPath: /opt/hive-metastore/conf/metastore-site.xml
+              subPath: metastore.xml
+            command: ["/opt/hive-metastore/bin/start-metastore"]
+            args: ["-p", "9083"]
+            resources:
+              requests:
+                memory: "2Gi"
+                cpu: "1"
+            imagePullPolicy: Always
+          volumes:
+          - name: metastore-cfg-vol
+            configMap:
+              name: metastore-cfg
+    ---
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: metastore
+      namespace: hive
+    spec:
+      ports:
+      - port: 9083
+        targetPort: 9083
+      selector:
+        app: metastore
+    ```
+  - yaml 파일을 적용합니다.
+  - ```shell
+    kubectl apply -f meta.yaml
     ```
