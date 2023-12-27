@@ -328,3 +328,147 @@
   - ```shell
     kubectl apply -f meta.yaml
     ```
+- mysql에 접속하여 metastore와 관련된 테이블들을 확인해 봅니다.
+  - ```shell
+    mysql> SHOW databases;
+    +--------------------+
+    | Database           |
+    +--------------------+
+    | information_schema |
+    | my_database        |
+    | mysql              |
+    | performance_schema |
+    | sys                |
+    | test               |
+    +--------------------+
+    6 rows in set (0.00 sec)
+
+    mysql> USE test;
+    Database changed
+
+    mysql> SHOW TABLES;
+    +-------------------------------+
+    | Tables_in_test                |
+    +-------------------------------+
+    | AUX_TABLE                     |
+    | BUCKETING_COLS                |
+    | CDS                           |
+    | COLUMNS_V2                    |
+    | COMPACTION_QUEUE              |
+    | COMPLETED_COMPACTIONS         |
+    | COMPLETED_TXN_COMPONENTS      |
+    | CTLGS                         |
+    | DATABASE_PARAMS               |
+    | DBS                           |
+    | DB_PRIVS                      |
+    | DELEGATION_TOKENS             |
+    | FUNCS                         |
+    | FUNC_RU                       |
+    | GLOBAL_PRIVS                  |
+    | HIVE_LOCKS                    |
+    | IDXS                          |
+    | INDEX_PARAMS                  |
+    | I_SCHEMA                      |
+    | KEY_CONSTRAINTS               |
+    | MASTER_KEYS                   |
+    | MATERIALIZATION_REBUILD_LOCKS |
+    | METASTORE_DB_PROPERTIES       |
+    | MIN_HISTORY_LEVEL             |
+    | MV_CREATION_METADATA          |
+    | MV_TABLES_USED                |
+    | NEXT_COMPACTION_QUEUE_ID      |
+    | NEXT_LOCK_ID                  |
+    | NEXT_TXN_ID                   |
+    | NEXT_WRITE_ID                 |
+    | NOTIFICATION_LOG              |
+    | NOTIFICATION_SEQUENCE         |
+    | NUCLEUS_TABLES                |
+    | PARTITIONS                    |
+    | PARTITION_EVENTS              |
+    | PARTITION_KEYS                |
+    | PARTITION_KEY_VALS            |
+    | PARTITION_PARAMS              |
+    | PART_COL_PRIVS                |
+    | PART_COL_STATS                |
+    | PART_PRIVS                    |
+    | REPL_TXN_MAP                  |
+    | ROLES                         |
+    | ROLE_MAP                      |
+    | RUNTIME_STATS                 |
+    | SCHEMA_VERSION                |
+    | SDS                           |
+    | SD_PARAMS                     |
+    | SEQUENCE_TABLE                |
+    | SERDES                        |
+    | SERDE_PARAMS                  |
+    | SKEWED_COL_NAMES              |
+    | SKEWED_COL_VALUE_LOC_MAP      |
+    | SKEWED_STRING_LIST            |
+    | SKEWED_STRING_LIST_VALUES     |
+    | SKEWED_VALUES                 |
+    | SORT_COLS                     |
+    | TABLE_PARAMS                  |
+    | TAB_COL_STATS                 |
+    | TBLS                          |
+    | TBL_COL_PRIVS                 |
+    | TBL_PRIVS                     |
+    | TXNS                          |
+    | TXN_COMPONENTS                |
+    | TXN_TO_WRITE_ID               |
+    | TYPES                         |
+    | TYPE_FIELDS                   |
+    | VERSION                       |
+    | WM_MAPPING                    |
+    | WM_POOL                       |
+    | WM_POOL_TO_TRIGGER            |
+    | WM_RESOURCEPLAN               |
+    | WM_TRIGGER                    |
+    | WRITE_SET                     |
+    +-------------------------------+
+    74 rows in set (0.00 sec)
+
+- Hive 관련 리소스가 올바르게 실행되고 있는지 확인합니다.
+  - ```shell
+    mun_js@cloudshell:~ (ggke-401900)$ kubectl get all -n hive
+    NAME                                     READY   STATUS      RESTARTS       AGE
+    pod/hive-initschema-xd7ct                0/1     Completed   0              3d19h
+    pod/metastore-78d4687f85-kqgm6           1/1     Running     0              3d20h
+    pod/trino-coordinator-5bcbbcddf4-j2bml   1/1     Running     1 (3d1h ago)   3d2h
+    pod/trino-worker-656f6c48cd-f5tfc        1/1     Running     0              89m
+    pod/trino-worker-656f6c48cd-mkkd4        1/1     Running     0              12m
+  
+    NAME                TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
+    service/metastore   ClusterIP   10.52.7.186    <none>        9083/TCP   3d20h
+    service/trino       ClusterIP   10.52.13.135   <none>        8080/TCP   3d19h
+  
+    NAME                                READY   UP-TO-DATE   AVAILABLE   AGE
+    deployment.apps/metastore           1/1     1            1           3d20h
+    deployment.apps/trino-coordinator   1/1     1            1           3d19h
+    deployment.apps/trino-worker        2/2     2            2           3d19h
+  
+    NAME                                           DESIRED   CURRENT   READY   AGE
+    replicaset.apps/metastore-78d4687f85           1         1         1       3d20h
+    replicaset.apps/trino-coordinator-5bcbbcddf4   1         1         1       3d2h
+    replicaset.apps/trino-coordinator-5f47dffc99   0         0         0       3d19h
+    replicaset.apps/trino-worker-656f6c48cd        2         2         2       3d2h
+    replicaset.apps/trino-worker-6f5fc48987        0         0         0       3d19h
+  
+    NAME                        COMPLETIONS   DURATION   AGE
+    job.batch/hive-initschema   1/1           47s        3d19h
+    ```
+
+# Trino를 사용하여 MinIO에 저장된 데이터 쿼리하기(3) - Trino 설치 및 연동
+- Kubernetes 클러스터에서 Trino를 설치하고, MinIO를 데이터 저장소로 활용하는 방법에 대해 포스팅하려고 합니다. 이를 통해 대규모 데이터셋에 대한 빠르고 유연한 쿼리를 수행할 수 있습니다.
+
+## Trino와 MinIO 설정
+### MinIO 설정
+- MinIO 클라이언트 초기 설정
+  - MinIO 클라이언트(mc)를 사용해 MinIO 서비스에 접속합니다.
+  - ```shell
+    ./mc alias set k8s-minio-dev http://127.0.0.1:9000 minioadmin minioadmin
+    mun_js@cloudshell:~ (ggke-401900)$ ./mc ls k8s-minio-dev/trino
+    [2023-11-12 13:51:31 UTC] 307MiB STANDARD nyc_data.csv
+    ```
+  - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/907b1454-5501-4345-8db9-07ac7dfe0acd)
+  - trino 버킷에 있는 nyc_data.csv 파일을 trino에서 읽어드리려고 합니다.
+  - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/af848d4b-ce52-4a81-a10c-1bf28d38364d)
