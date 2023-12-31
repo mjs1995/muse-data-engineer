@@ -472,3 +472,42 @@
   - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/907b1454-5501-4345-8db9-07ac7dfe0acd)
   - trino 버킷에 있는 nyc_data.csv 파일을 trino에서 읽어드리려고 합니다.
   - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/af848d4b-ce52-4a81-a10c-1bf28d38364d)
+- MinIO 네트워크 정책 설정
+  - MinIO 서비스가 Trino 서비스에 접근할 수 있도록 네트워크 정책을 설정합니다. 즉 minio-dev 네임스페이스의 MinIO 서비스가 hive 네임스페이스의 Trino 서비스에 접근할 수 있도록 하는 네트워크 정책입니다.(minio-to-trino-networkpolicy.yaml)
+  - ```shell
+    apiVersion: networking.k8s.io/v1
+    kind: NetworkPolicy
+    metadata:
+      name: allow-minio-to-trino
+      namespace: minio-dev
+    spec:
+      podSelector:
+        matchLabels:
+          app: minio
+      policyTypes:
+      - Ingress
+      - Egress
+      ingress:
+      - from:
+        - namespaceSelector:
+            matchLabels:
+              name: hive
+      egress:
+      - to:
+        - namespaceSelector:
+            matchLabels:
+              name: hive
+    ```
+- 네트워크 정책 적용
+  - 위에서 작성한 네트워크 정책 파일을 적용합니다.
+  - ```shell
+    kubectl apply -f minio-to-trino-networkpolicy.yaml
+    ```
+- 네트워크 정책 확인
+  - 새로운 네트워크 정책이 정상적으로 적용되었는지 확인합니다.
+  - ```shell
+    kubectl get networkpolicies --namespace minio-dev
+    NAME                   POD-SELECTOR   AGE
+    allow-minio-to-trino   app=minio      23s
+    ```
+  - minio-dev 네임스페이스의 MinIO 서비스와 hive 네임스페이스의 Trino 서비스 간의 네트워크 통신이 가능해집니다.
