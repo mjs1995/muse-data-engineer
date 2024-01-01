@@ -511,3 +511,48 @@
     allow-minio-to-trino   app=minio      23s
     ```
   - minio-dev 네임스페이스의 MinIO 서비스와 hive 네임스페이스의 Trino 서비스 간의 네트워크 통신이 가능해집니다.
+
+### Trino 설치 및 설정
+- Trino Helm 차트 리포지토리를 추가합니다.
+  - ```shell
+    helm repo add trino https://trinodb.github.io/charts
+    ```
+- Trino 차트를 다운로드합니다.
+  - ```shell
+    mkdir trino-minio
+    helm repo add trino https://trinodb.github.io/charts
+    helm pull trino/trino
+    tar xvf trino-0.13.0.tgz
+    cd trino/
+    ```
+  - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/bc82b427-cc8b-4acc-823b-79fab225d818)
+- values.yaml 파일을 수정하여 Trino의 설정을 조정합니다. MinIO와의 연동을 위해 additionalCatalogs 섹션에서 MinIO 카탈로그를 정의합니다.
+  - ```yaml
+    additionalCatalogs:
+      minio: |-
+        connector.name=hive
+        hive.metastore.uri=thrift://metastore:9083
+        hive.s3.endpoint=http://minio-service.minio-dev.svc.cluster.local:9000
+        hive.s3.aws-access-key=minioadmin
+        hive.s3.aws-secret-key=minioadmin
+        hive.s3.path-style-access=true
+    ```
+- Trino 리소스 할당량을 조정합니다.
+  - ```yaml
+    coordinator:
+      resources:
+        requests:
+          memory: "2Gi"
+          cpu: "500m"
+        limits:
+          memory: "4Gi"
+          cpu: "1000m"
+    worker:
+      resources:
+        requests:
+          memory: "2Gi"
+          cpu: "500m"
+        limits:
+          memory: "4Gi"
+          cpu: "1000m"
+    ```
