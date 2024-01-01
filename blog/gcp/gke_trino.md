@@ -556,3 +556,41 @@
           memory: "4Gi"
           cpu: "1000m"
     ```
+- Helm을 사용하여 Trino를 설치합니다.
+  - ```shell
+    helm install trino . -f values.yaml -n hive
+    # helm upgrade trino trino/trino -f values.yaml -n hive
+    # kubectl delete pods -l app=trino -n hive
+    ```
+
+## Trino로 MinIO 데이터 쿼리하기
+- Trino CLI에 접속하여 MinIO 카탈로그를 확인합니다.
+  - ```shell
+    export POD_NAME=$(kubectl get pods --namespace hive -l "app=trino,release=trino,component=coordinator" -o jsonpath="{.items[0].metadata.name}")
+    # kubectl port-forward $POD_NAME 8080:8080 -n hive
+    kubectl exec -it $POD_NAME -n hive -- trino
+    trino> SHOW CATALOGS;
+    Catalog
+    ---------
+    minio
+    system
+    tpcds
+    tpch
+    (4 rows)
+
+    Query 20231219_071108_00000_7zusv, FINISHED, 2 nodes
+    Splits: 8 total, 8 done (100.00%)
+    11.91 [0 rows, 0B] [0 rows/s, 0B/s]
+    ```
+- MinIO의 스키마를 확인하고 minio의 데이터를 불러와서 테이블로 만듭니다.
+  - ```shell
+    trino> SHOW SCHEMAS FROM minio;
+          Schema
+    --------------------
+    default
+    information_schema
+    (2 rows)
+
+    Query 20231219_071349_00001_7zusv, FINISHED, 3 nodes
+    Splits: 8 total, 8 done (100.00%)
+    4.16 [2 rows, 35B] [0 rows/s, 8B/s]
