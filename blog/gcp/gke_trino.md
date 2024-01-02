@@ -594,3 +594,38 @@
     Query 20231219_071349_00001_7zusv, FINISHED, 3 nodes
     Splits: 8 total, 8 done (100.00%)
     4.16 [2 rows, 35B] [0 rows/s, 8B/s]
+
+    trino> SHOW TABLES FROM minio.default;
+    Table
+    -------
+    (0 rows)
+
+    Query 20231219_071519_00002_7zusv, FINISHED, 3 nodes
+    Splits: 8 total, 8 done (100.00%)
+    2.76 [0 rows, 0B] [0 rows/s, 0B/s]
+
+    trino> CREATE SCHEMA minio.l0
+      -> WITH (
+      ->     location = 's3a://trino/'
+      -> );
+      ->
+    CREATE SCHEMA
+
+    trino> CREATE TABLE IF NOT EXISTS minio.l0.nyc_data (
+        ->     VendorID varchar,
+        ->     passenger_count varchar,
+        ->     trip_distance varchar
+        -> )
+        -> WITH (
+        ->   external_location = 's3a://trino/',
+        ->   format = 'CSV'
+        -> );
+    CREATE TABLE
+    ```
+  - ```shell
+    trino> SELECT * FROM minio.l0.nyc_data;
+    ```
+  - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/a0ca43e3-c49d-40fa-8c67-80d57f481131)
+- trino UI 실행되는 각 쿼리에 대한 세부 정보도 제공합니다. 리소스 활용도, 타임라인, 단계, 작업자가 수행한 작업 등의 세부 정보를 확인할 수 있습니다.
+  - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/020c8f44-9820-4d44-8c50-10323f3815f2)
+  - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/05966ed2-0e72-45f6-be0b-50441f8bfeba)
