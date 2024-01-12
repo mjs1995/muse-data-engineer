@@ -47,3 +47,80 @@
         DO
         INSERT INTO daily_rank_log VALUES (NOW(), 'DONE');
         ```
+        
+## 스토어드 프로시저
+- 스토어드 프로시저(Stored Procedure)는 서로 데이터를 주고받아야 하는 여러 쿼리를 하나의 그룹으로 묶어서 독립적으로 실행하기 위해 사용하는 것으로, 여러 SQL 쿼리를 하나의 블록으로 묶어 놓은 것입니다.
+- ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/8b383d6d-7aee-48b0-82f0-1c6de278c4a2)
+  - https://www.oreilly.com/library/view/understanding-db2-learning/0131859161/0131859161_ch07lev1sec14.html
+- 이를 통해 데이터베이스에 저장되어 있는 데이터에 대한 복잡한 처리를 한 번에 수행할 수 있으며, 프로그램 코드와 데이터베이스 사이에서의 데이터 전송을 최소화할 수 있습니다. 특히, 배치 프로그램과 같이 첫 번째 쿼리의 결과를 이용하여 두 번째 쿼리를 실행해야 하는 경우에 매우 유용합니다.
+- 스토어드 프로시저를 작성할 때는 다음과 같은 구조를 사용합니다.
+  - ```sql
+    create [or replace] procedure procedure_name(parameter_list)
+    language plpgsql
+    as $$
+    declare
+    -- variable declaration
+    begin
+    -- stored procedure body
+    end; $$
+    ```
+    - 키워드 'create procedure': 스토어드 프로시저를 생성할 때 사용합니다. 'or replace' 옵션을 추가하면, 이미 존재하는 프로시저가 있다면 그것을 새로운 정의로 대체합니다.
+    - 프로시저 이름(procedure_name): 프로시저를 식별하기 위한 이름을 지정합니다.
+    - 매개변수 목록(parameter_list): 프로시저가 처리할 입력, 출력 또는 입출력 매개변수들을 정의합니다. 매개변수는 없을 수도, 하나 이상 있을 수도 있습니다.
+    - 언어(Language): 프로시저가 작성된 프로그래밍 언어를 명시합니다. 여기서는 'plpgsql'을 사용하는데, 이는 PostgreSQL의 절차적 언어입니다. 다른 데이터베이스 시스템에서는 SQL, C 등 다른 언어를 사용할 수 있습니다.
+    - 본문(Body): 실제 스토어드 프로시저의 로직을 작성하는 부분입니다. 여기서 데이터베이스 쿼리, 조건문, 루프 등 다양한 프로그래밍 구조를 사용할 수 있습니다.
+- 스토어드 프로시저를 사용한 예제입니다.
+  - ```sql
+    CREATE OR REPLACE PROCEDURE create_table_employees()
+    LANGUAGE plpgsql
+    AS $$
+    BEGIN
+        IF NOT EXISTS (
+            SELECT FROM pg_tables
+            WHERE schemaname = 'public'
+            AND tablename  = 'employees'
+        ) THEN
+    		CREATE TABLE employees (
+    					employee_id serial PRIMARY KEY,
+    					full_name VARCHAR NOT NULL,
+    					manager_id INT
+    				);
+    
+            INSERT INTO employees (employee_id, full_name, manager_id) VALUES
+                (1, 'Michael North', NULL),
+                (2, 'Megan Berry', 1),
+                (3, 'Sarah Berry', 1),
+                (4, 'Zoe Black', 1),
+                (5, 'Tim James', 1),
+                (6, 'Bella Tucker', 2),
+                (7, 'Ryan Metcalfe', 2),
+                (8, 'Max Mills', 2),
+                (9, 'Benjamin Glover', 2),
+                (10, 'Carolyn Henderson', 3),
+                (11, 'Nicola Kelly', 3),
+                (12, 'Alexandra Climo', 3),
+                (13, 'Dominic King', 3),
+                (14, 'Leonard Gray', 4),
+                (15, 'Eric Rampling', 4),
+                (16, 'Piers Paige', 7),
+                (17, 'Ryan Henderson', 7),
+                (18, 'Frank Tucker', 8),
+                (19, 'Nathan Ferguson', 8),
+                (20, 'Kevin Rampling', 8);
+        END IF;
+    END;
+    $$;
+    ```
+  - 프로시저를 데이터베이스에 추가한 후에 다음 명령어로 호출할 수 있습니다.
+    - ```sql
+      CALL create_table_employees();
+      ```
+  - 생성된 테이블을 조회합니다.
+    - ```sql
+      SELECT * FROM employees;
+      ```
+    - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/0c721615-3c4c-4c83-b2df-803607be4c2e)
+
+# Reference
+- [Postgresql doc](https://www.postgresql.org/docs/current/sql-createprocedure.html)
+- [Real MySQL 8.0 (2권)](https://product.kyobobook.co.kr/detail/S000001766483)
