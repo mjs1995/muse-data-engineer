@@ -74,3 +74,60 @@
         // 추가적인 차원과 측정 정의
       }
       ```
+
+# LookML(Looker Modeling Language)
+- Looker는 LookML을 사용하여 데이터를 모델링합니다. 예를 들어, 사용자 테이블에서 다양한 차원과 측정치를 정의할 수 있으며, 이를 통해 데이터를 더욱 효과적으로 분석할 수 있습니다. 또한, 여러 데이터 소스를 조인하여 복합적인 데이터 모델을 구축할 수도 있습니다.
+- LookML 구조 개요
+  - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/3d6b3bae-e7a6-4ac2-a67b-5d68d8208786)
+    - https://www.cloudskillsboost.google/focuses/18478?parent=catalog
+  - LookML은 데이터 모델링을 위한 Looker의 언어로, 구조화된 계층 시스템을 사용하여 데이터를 정의하고 조작합니다. 이를 통해 SQL 쿼리를 보다 효율적으로 활용하고, 데이터 분석과 시각화를 위한 강력한 도구를 만들 수 있습니다.
+  - LookML의 주요 구성 요소는 다음과 같습니다.
+    - 프로젝트 (Projects)
+      - 개념: LookML 코드 라이브러리.
+      - 특징: 각 프로젝트는 일반적으로 데이터 소스나 데이터베이스 연결에 매핑되며, Git을 통한 버전 관리가 가능합니다.
+      - 사용: 서로 다른 스키마의 데이터셋은 서로 다른 프로젝트에 속합니다.
+    - 모델 (Models)
+      - 구성: 프로젝트 내부에 존재하며, 하나 이상의 탐색(Explore)을 포함합니다.
+      - 기능: 데이터베이스 연결을 정의하고, 탐색 및 그 조인 논리를 설정합니다.
+      - 목적: 사용자가 특정 탐색에 액세스하는 것을 제한하거나, 비즈니스 영역별로 탐색을 분리하고 구성합니다.
+    - 탐색 (Explores)
+      - 정의: 하나 이상의 뷰(Views)가 결합된 것.
+      - 역할: 사용자 인터페이스에서 분석의 주요 동력 역할을 하며, 특정 비즈니스 질문에 대한 데이터를 제공합니다.
+      - 구성: 탐색은 비즈니스 주제를 중심으로 구성되어야 하며, 사용자가 쉽게 이해하고 활용할 수 있어야 합니다.
+    - 뷰 (Views)
+      - 설명: 데이터베이스 테이블 또는 그 논리적 표현.
+      - 종류: 표준 뷰(데이터베이스 테이블의 추상화) 및 파생 테이블(가상 테이블)
+      - 기능: 데이터의 차원(Dimensions)과 측정값(Measures)을 정의합니다.
+    - 차원 (Dimensions) 및 측정값 (Measures)
+      - 차원: 테이블의 열 또는 그 논리적 표현을 나타냅니다. 데이터의 속성을 설명합니다.
+      - 측정값: 데이터베이스 테이블에 명시적으로 존재하지 않는 집계 함수입니다. 차원을 기반으로 합계, 평균, 카운트 등을 계산합니다.
+- 기본 구조와 사용 예제
+  - LookerML에서는 view를 정의하여 특정 데이터 테이블을 나타냅니다. 각 view 내에서는 다양한 dimension, measure, dimension_group 등을 정의하여 데이터를 다룹니다.
+  - 사용자 데이터를 분석하기 위한 view는 다음과 같이 구성될 수 있습니다
+  - ```yaml
+    view: users {
+      sql_table_name: `database_schema.table_name`;;
+
+      dimension: id {
+        primary_key: yes
+        type: number
+        sql: ${TABLE}.id ;;
+      }
+
+      dimension: age {
+        type: number
+        sql: ${TABLE}.age ;;
+      }
+
+      dimension_group: created {
+        type: time
+        timeframes: [date, week, month]
+        sql: ${TABLE}.created_at ;;
+      }
+
+      measure: total_sales {
+        type: sum
+        sql: ${sale_price} ;;
+      }
+    }
+    ```
