@@ -1,5 +1,5 @@
-# Looker와 LookerML
-## Looker
+# Looker
+## Looker 개요
 - Looker는 Google Cloud의 혁신적인 데이터 플랫폼으로, 사용자가 데이터를 대화형으로 분석하고 시각화할 수 있게 해줍니다. Looker를 통해 사용자는 심층적인 데이터 분석을 수행하고, 다양한 데이터 소스를 통합하여 통찰력을 얻으며, 데이터 기반의 워크플로와 맞춤형 데이터 애플리케이션을 구축할 수 있습니다.
 - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/6ff3fd27-c231-4d98-b3f7-bf02e4b30c26)
   - https://www.youtube.com/watch?v=kxgcj9T0G1Q&t=215s
@@ -33,3 +33,44 @@
     - 용도: 복잡하거나 자주 사용되는 쿼리를 반복적으로 실행하고, 빠른 데이터 액세스를 위해 결과를 캐시하는 데 사용됩니다.
     - 이점: 쿼리 런타임 감소, 비즈니스 사용자가 필요할 때 즉시 데이터 사용 가능.
     - 단점: 데이터베이스 저장 공간 사용 증가(비용 증가 가능성).
+    - PDT 매개변수
+      - Datagroup Trigger: 모델에 구성된 데이터 그룹 또는 캐싱 정책 사용.
+      - SQL Trigger Value: 하나의 값을 반환하는 SELECT 문을 사용, 데이터베이스에 반복적으로 보내 PDT 재작성 유발.
+      - Persist For: 설정된 기간 동안 PDT를 유지(예: "1시간" 또는 "4시간").
+    - PDT 사용 예시 : 이 예시는 order_items를 원본으로 사용하는 order_details_summary 뷰의 파생 테이블을 정의합니다. 데이터 그룹 트리거를 사용하여 PDT 캐싱 정책을 적용합니다.
+- 쿼리 최적화
+  - 방법 
+    - 증분 영구 파생 테이블 생성
+      - ![image](https://github.com/mjs1995/muse-data-engineer/assets/47103479/38a0b7b2-23f4-4b9a-8c2e-188826aebb8d)
+      - 전체 테이블을 다시 작성하지 않고 자동으로 업데이트됩니다.
+      - 새로운 데이터를 기존 테이블에 추가하여 쿼리 크기를 줄입니다.
+    - 데이터 그룹 사용
+      - 매일 새로고침을 통해 객체를 유지합니다.
+      - 예시: datagroup: daily_datagroup은 최대 24시간 동안 캐시를 유지합니다.
+    - 증분 집계 테이블
+      - 여러 기간에 걸친 주문 데이터를 요약합니다.
+      - LookML의 aggregate_table 매개변수를 사용해 정의됩니다.
+    - 효율적인 뷰 조인
+      - 탐색 정의 시 필요한 뷰만 조인합니다.
+      - 기본 필드를 기본 키로 사용하고, 가능한 한 many_to_one 조인을 사용합니다.
+    - PDT 빌드 모니터링
+      - Looker 인스턴스에서 PDT의 상태, 빌드 시간, 캐싱을 모니터링합니다.
+  - 증분 영구 파생 테이블 예시 : 이 예시는 order_items를 기반으로 한 증분 파생 테이블을 정의합니다. daily_datagroup 데이터 그룹을 사용하여 캐시 정책을 적용합니다.
+    - ```yaml
+      view: incremental_pdt {
+        derived_table: {
+          datagroup_trigger: daily_datagroup
+          increment_key: "created_date"
+          increment_offset: 3
+          explore_source: order_items {
+            column: order_id {}
+            column: sale_price {}
+            column: created_date {}
+            column: created_week {}
+            column: created_month {}
+            column: state { field: users.state }
+          }
+        }
+        // 추가적인 차원과 측정 정의
+      }
+      ```
