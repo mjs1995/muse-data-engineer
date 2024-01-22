@@ -131,3 +131,41 @@
       }
     }
     ```
+  - 파생 테이블(Derived Table)
+    - LookerML은 SQL Runner를 통해 파생 테이블을 생성할 수 있게 해줍니다. 이는 복잡한 SQL 쿼리를 Looker 내에서 직접 실행하고 결과를 기반으로 새로운 view를 만들 수 있게 해줍니다.
+    - 예를 들어, 주문 데이터를 분석하기 위한 파생 테이블은 다음과 같이 정의될 수 있습니다:
+    - ```yaml
+      view: order_details {
+        derived_table: {
+          sql: SELECT
+                order_items.order_id,
+                order_items.user_id,
+                COUNT(*) AS order_item_count,
+                SUM(order_items.sale_price) AS order_revenue
+              FROM order_items
+              GROUP BY order_id, user_id ;;
+        }
+
+        dimension: order_id {
+          type: number
+          sql: ${TABLE}.order_id ;;
+        }
+
+        // 추가적인 dimension과 measure 정의
+      }
+      ```
+- Looker의 캐싱 과정과 데이터그룹 활용
+  - 캐싱 과정
+    - Looker는 데이터베이스에 SQL 쿼리를 생성하고 전송합니다. 사용자가 Looker에서 쿼리를 실행할 때마다, 그 결과는 캐시되어 Looker 인스턴스에 암호화된 파일로 저장됩니다. 캐싱은 이전에 실행된 쿼리의 결과를 재활용하여 데이터베이스에 동일한 쿼리가 반복해서 실행되는 것을 방지합니다. 이는 데이터베이스 부하를 줄이고 Looker 성능을 최적화하는 데 도움이 됩니다.
+    - 캐싱 정책: Looker는 동일한 쿼리가 이전에 실행되었는지 확인하고, 캐싱 정책에 따라 유효한 결과가 있으면 이를 반환합니다. 유효하지 않은 경우 새로운 쿼리를 데이터베이스에 보내고 결과를 캐시합니다.
+  - 데이터그룹 (Datagroups)
+    - 정의: 데이터그룹은 캐싱 정책이나 규칙에 이름을 부여한 것입니다. LookML 개발자들은 데이터그룹을 사용하여 Looker 인스턴스의 캐싱을 관리합니다.
+    - 설정: 다양한 캐싱 정책은 별도의 데이터그룹 정의를 요구합니다. 데이터의 추출, 변환 및 로딩(ETL) 프로세스와 비즈니스 요구에 따라 필요한 데이터그룹의 수와 유형이 달라집니다.
+    - 데이터그룹 구성
+      - max_cache_age: 캐시된 결과를 유지하는 시간을 지정합니다 (예: 24시간).
+      - sql_trigger: Looker가 결과가 변경되었는지 여부를 확인할 수 있는 SELECT문을 작성합니다. 이는 하나의 값만 반환해야 하며, Looker는 이 문을 정기적으로 데이터베이스에 보내 캐시를 새로고칩니다.
+  - 데이터그룹 적용
+    - 모델 수준: 모든 탐색(Explores)에 기본적으로 동일한 캐싱 규칙을 적용할 수 있습니다.
+    - 개별 탐색: 특정 탐색에 데이터그룹을 적용하여 모델 수준의 설정을 덮어쓸 수 있습니다.
+    - 지속적 파생 테이블(PDTs): PDT가 어떻게 재구축되는지 지정하기 위해 데이터그룹을 적용할 수 있습니다.
+  - 스케줄: Looker와 대시보드의 스케줄도 데이터그룹을 기반으로 실행될 수 있습니다. 
